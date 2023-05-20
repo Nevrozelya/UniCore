@@ -1,4 +1,7 @@
+
 # UniCore
+
+## General
 
 A project used to regroup common dependencies of Nevrozelya's projects, based on :
 
@@ -7,4 +10,20 @@ A project used to regroup common dependencies of Nevrozelya's projects, based on
 - **[UniRx](https://github.com/neuecc/UniRx)**
 - **[LINQ-to-GameObject-for-Unity](https://github.com/neuecc/LINQ-to-GameObject-for-Unity)**
 
-Import url : `https://github.com/Nevrozelya/UniCore.git?path=Assets/Core`
+## Installation
+
+1) Import `UniCore` in Unity Packages Manager via git url : `https://github.com/Nevrozelya/UniCore.git?path=Assets/Core`.
+
+2) Add `"com.unity.nuget.newtonsoft-json": "3.2.1"` to your project's `manifest.json`.
+
+3) Add
+```
+"com.unity.nuget.newtonsoft-json": {
+      "version": "3.2.1",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    }
+```
+to your project's `packages-lock.json`.
