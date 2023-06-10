@@ -4,9 +4,14 @@ namespace UniCore.Extensions
 {
     public static class ColorExtensions
     {
-        public static Color WithAlpha(this Color c, float a)
+        public static Color WithAlpha(this Color color, float alpha)
         {
-            return new Color(c.r, c.g, c.b, a);
+            return new Color(color.r, color.g, color.b, alpha);
+        }
+
+        public static Color WithIntensity(this Color color, float intensity)
+        {
+            return color * Mathf.LinearToGammaSpace(intensity);
         }
 
         public static string ToHexa(this Color color, bool withAlpha = false)
