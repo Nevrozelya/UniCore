@@ -59,7 +59,7 @@ namespace UniCore.Utils
         public static void Info(string txt, string prefix = null)
         {
             string formated = Format(txt, prefix);
-            PrintInfo(formated);
+            Debug.Log(formated);
         }
 
         public static void Info(object obj, string prefix = null)
@@ -70,7 +70,7 @@ namespace UniCore.Utils
         public static void Warning(string txt, string prefix = null)
         {
             string formated = Format(txt, prefix);
-            PrintWarning(formated);
+            Debug.LogWarning(formated);
         }
 
         public static void Warning(object obj, string prefix = null)
@@ -81,7 +81,7 @@ namespace UniCore.Utils
         public static void Error(string txt, string prefix = null)
         {
             string formated = Format(txt, prefix);
-            PrintError(formated);
+            Debug.LogError(formated);
         }
 
         public static void Error(object obj, string prefix = null)
@@ -94,21 +94,6 @@ namespace UniCore.Utils
             string date = DateTime.UtcNow.ToString("o");
             prefix = prefix == null ? "Default" : prefix;
             return string.Format(FORMAT, date, prefix, txt);
-        }
-
-        private static void PrintInfo(string txt)
-        {
-            Debug.Log(txt);
-        }
-
-        private static void PrintWarning(string txt)
-        {
-            Debug.LogWarning(txt);
-        }
-
-        private static void PrintError(string txt)
-        {
-            Debug.LogError(txt);
         }
         #endregion
     }
