@@ -1,21 +1,16 @@
 using Cysharp.Threading.Tasks;
 using System;
-using System.Collections;
 using System.Threading;
 using UnityEngine;
-using static UniCore.Utils.Easing;
 
 namespace UniCore.Utils
 {
     public static class Interpolation
     {
-        public static async UniTask Async(
+        public static async UniTask LinearNormalizedAsync(
             Action<float> progress,
-            float from,
-            float to,
             float duration,
-            EasingFunction ease = EasingFunction.EaseInOutCubic,
-            CancellationToken token = default)
+            CancellationToken token)
         {
             duration = duration < 0 ? 0 : duration;
 
@@ -25,93 +20,133 @@ namespace UniCore.Utils
 
                 while (Time.time - timeStart < duration && !token.IsCancellationRequested)
                 {
-                    if (token != default && token.IsCancellationRequested)
+                    float linear = (Time.time - timeStart) / duration;
+                    progress?.Invoke(linear);
+                    await UniTask.Yield(token);
+
+                    if (token.IsCancellationRequested)
                     {
                         return;
                     }
-
-                    float currentNormalizedTime = EaseByFunction((Time.time - timeStart) / duration, ease);
-                    progress(Mathf.Lerp(from, to, currentNormalizedTime));
-                    await UniTask.Yield(token);
                 }
             }
 
             if (!token.IsCancellationRequested)
             {
-                progress(to);
+                progress(1);
             }
         }
 
-        public static IEnumerator Coroutine(
+        public static async UniTask EasedNormalizedAsync(
+            Action<float> progress,
+            float duration,
+            EasingFunction easing,
+            CancellationToken token)
+        {
+            await LinearNormalizedAsync(p =>
+            {
+                float eased = easing.Ease(p);
+                progress?.Invoke(eased);
+            }, duration, token);
+        }
+
+        public static async UniTask EasedNormalizedAsync(
+            Action<float> progress,
+            float duration,
+            AnimationCurve easing,
+            CancellationToken token)
+        {
+            await LinearNormalizedAsync(p =>
+            {
+                float eased = easing?.Evaluate(p) ?? p;
+                progress?.Invoke(eased);
+            }, duration, token);
+        }
+
+        public static async UniTask LinearAsync(
             Action<float> progress,
             float from,
             float to,
             float duration,
-            Action endCallback = null,
-            EasingFunction ease = EasingFunction.EaseInOutCubic)
+            CancellationToken token)
         {
-            duration = duration < 0 ? 0 : duration;
-
-            if (duration > 0)
+            await LinearNormalizedAsync(p =>
             {
-                float timeStart = Time.time;
-
-                while (Time.time - timeStart < duration)
-                {
-                    float currentNormalizedTime = EaseByFunction((Time.time - timeStart) / duration, ease);
-                    progress(Mathf.Lerp(from, to, currentNormalizedTime));
-                    yield return true;
-                }
-            }
-            progress(to);
-            endCallback?.Invoke();
+                float scaled = Mathf.Lerp(from, to, p);
+                progress?.Invoke(scaled);
+            }, duration, token);
         }
 
-        public static float EaseByFunction(float value, EasingFunction func)
+        public static async UniTask EasedAsync(
+            Action<float> progress,
+            float from,
+            float to,
+            float duration,
+            EasingFunction easing,
+            CancellationToken token)
         {
-            switch (func)
+            await LinearNormalizedAsync(p =>
             {
-                case EasingFunction.Linear:
-                    return Linear(value);
-                case EasingFunction.EaseInQuad:
-                    return EaseInQuad(value);
-                case EasingFunction.EaseOutQuad:
-                    return EaseOutQuad(value);
-                case EasingFunction.EaseInOutQuad:
-                    return EaseInOutQuad(value);
-                case EasingFunction.EaseInCubic:
-                    return EaseInCubic(value);
-                case EasingFunction.EaseOutCubic:
-                    return EaseOutCubic(value);
-                case EasingFunction.EaseInOutCubic:
-                    return EaseInOutCubic(value);
-                case EasingFunction.EaseInQuart:
-                    return EaseInQuart(value);
-                case EasingFunction.EaseOutQuart:
-                    return EaseOutQuart(value);
-                case EasingFunction.EaseInOutQuart:
-                    return EaseInOutQuart(value);
-                case EasingFunction.EaseInQuint:
-                    return EaseInQuint(value);
-                case EasingFunction.EaseOutQuint:
-                    return EaseOutQuint(value);
-                case EasingFunction.EaseInOutQuint:
-                    return EaseInOutQuint(value);
-                case EasingFunction.EaseInElastic:
-                    return EaseInElastic(value);
-                case EasingFunction.EaseOutElastic:
-                    return EaseOutElastic(value);
-                case EasingFunction.EaseInOutElastic:
-                    return EaseInOutElastic(value);
-                case EasingFunction.EaseInBounce:
-                    return EaseInBounce(value);
-                case EasingFunction.EaseOutBounce:
-                    return EaseOutBounce(value);
-                case EasingFunction.EaseInOutBounce:
-                    return EaseInOutBounce(value);
-                default:
-                    return Linear(value);
-            }
+                float eased = easing.Ease(p);
+                float scaled = Mathf.Lerp(from, to, eased);
+                progress?.Invoke(scaled);
+            }, duration, token);
+        }
+
+        public static async UniTask EasedAsync(
+            Action<float> progress,
+            float from,
+            float to,
+            float duration,
+            AnimationCurve easing,
+            CancellationToken token)
+        {
+            await LinearNormalizedAsync(p =>
+            {
+                float eased = easing?.Evaluate(p) ?? p;
+                float scaled = Mathf.Lerp(from, to, eased);
+                progress?.Invoke(scaled);
+            }, duration, token);
+        }
+
+        public static async UniTask CubicNormalizedAsync(
+            Action<float> progress,
+            float duration,
+            CancellationToken token)
+        {
+            await EasedNormalizedAsync(
+                progress,
+                duration,
+                EasingFunction.EaseInOutCubic,
+                token);
+        }
+
+        public static async UniTask CubicAsync(
+            Action<float> progress,
+            float from,
+            float to,
+            float duration,
+            CancellationToken token)
+        {
+            await EasedAsync(
+                progress,
+                from,
+                to,
+                duration,
+                EasingFunction.EaseInOutCubic,
+                token);
+        }
+
+        [Obsolete("Use EasedAsync instead.")]
+        public static async UniTask Async(
+            Action<float> progress,
+            float from,
+            float to,
+            float duration,
+            EasingFunction ease = EasingFunction.EaseInOutCubic,
+            CancellationToken token = default)
+        {
+            await EasedAsync(progress, from, to, duration, ease, token);
         }
     }
 }

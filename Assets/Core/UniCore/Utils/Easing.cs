@@ -2,29 +2,81 @@
 
 namespace UniCore.Utils
 {
+    public enum EasingFunction
+    {
+        Linear,
+        EaseInQuad,
+        EaseOutQuad,
+        EaseInOutQuad,
+        EaseInCubic,
+        EaseOutCubic,
+        EaseInOutCubic,
+        EaseInQuart,
+        EaseOutQuart,
+        EaseInOutQuart,
+        EaseInQuint,
+        EaseOutQuint,
+        EaseInOutQuint,
+        EaseInElastic,
+        EaseOutElastic,
+        EaseInOutElastic,
+        EaseInBounce,
+        EaseOutBounce,
+        EaseInOutBounce
+    }
+
     public static class Easing
     {
-        public enum EasingFunction
+        public static float Ease(this EasingFunction func, float value)
         {
-            Linear,
-            EaseInQuad,
-            EaseOutQuad,
-            EaseInOutQuad,
-            EaseInCubic,
-            EaseOutCubic,
-            EaseInOutCubic,
-            EaseInQuart,
-            EaseOutQuart,
-            EaseInOutQuart,
-            EaseInQuint,
-            EaseOutQuint,
-            EaseInOutQuint,
-            EaseInElastic,
-            EaseOutElastic,
-            EaseInOutElastic,
-            EaseInBounce,
-            EaseOutBounce,
-            EaseInOutBounce
+            return value.EaseByFunction(func);
+        }
+
+        public static float EaseByFunction(this float value, EasingFunction func)
+        {
+            switch (func)
+            {
+                case EasingFunction.Linear:
+                    return Linear(value);
+                case EasingFunction.EaseInQuad:
+                    return EaseInQuad(value);
+                case EasingFunction.EaseOutQuad:
+                    return EaseOutQuad(value);
+                case EasingFunction.EaseInOutQuad:
+                    return EaseInOutQuad(value);
+                case EasingFunction.EaseInCubic:
+                    return EaseInCubic(value);
+                case EasingFunction.EaseOutCubic:
+                    return EaseOutCubic(value);
+                case EasingFunction.EaseInOutCubic:
+                    return EaseInOutCubic(value);
+                case EasingFunction.EaseInQuart:
+                    return EaseInQuart(value);
+                case EasingFunction.EaseOutQuart:
+                    return EaseOutQuart(value);
+                case EasingFunction.EaseInOutQuart:
+                    return EaseInOutQuart(value);
+                case EasingFunction.EaseInQuint:
+                    return EaseInQuint(value);
+                case EasingFunction.EaseOutQuint:
+                    return EaseOutQuint(value);
+                case EasingFunction.EaseInOutQuint:
+                    return EaseInOutQuint(value);
+                case EasingFunction.EaseInElastic:
+                    return EaseInElastic(value);
+                case EasingFunction.EaseOutElastic:
+                    return EaseOutElastic(value);
+                case EasingFunction.EaseInOutElastic:
+                    return EaseInOutElastic(value);
+                case EasingFunction.EaseInBounce:
+                    return EaseInBounce(value);
+                case EasingFunction.EaseOutBounce:
+                    return EaseOutBounce(value);
+                case EasingFunction.EaseInOutBounce:
+                    return EaseInOutBounce(value);
+                default:
+                    return Linear(value);
+            }
         }
 
         public static float Linear(float t)
