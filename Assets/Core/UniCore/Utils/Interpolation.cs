@@ -20,14 +20,14 @@ namespace UniCore.Utils
 
                 while (Time.time - timeStart < duration && !token.IsCancellationRequested)
                 {
-                    float linear = (Time.time - timeStart) / duration;
-                    progress?.Invoke(linear);
-                    await UniTask.Yield(token);
-
                     if (token.IsCancellationRequested)
                     {
                         return;
                     }
+
+                    float linear = (Time.time - timeStart) / duration;
+                    progress?.Invoke(linear);
+                    await UniTask.Yield(token);
                 }
             }
 
