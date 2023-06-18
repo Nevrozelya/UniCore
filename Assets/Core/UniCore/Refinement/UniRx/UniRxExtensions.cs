@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UniRx;
 
-namespace UniCore.Utils
+namespace UniCore.Refinement.UniRx
 {
-    public static class UniRxOperators
+    public static class UniRxExtensions
     {
-        public static IObservable<IEnumerable<TValue>> BufferWithCondition<TValue>(this IObservable<TValue> @this, Func<TValue, bool> condition)
+        public static IObservable<IEnumerable<TValue>> BufferWithCondition<TValue>(this IObservable<TValue> observable, Func<TValue, bool> condition)
         {
-            List<TValue> buffer = new List<TValue>();
+            List<TValue> buffer = new();
 
             return Observable.Create<IEnumerable<TValue>>(observer =>
             {
@@ -26,7 +26,7 @@ namespace UniCore.Utils
                     }
                 }
 
-                IDisposable subscription = @this.Subscribe(value =>
+                IDisposable subscription = observable.Subscribe(value =>
                 {
                     if (condition(value))
                     {
