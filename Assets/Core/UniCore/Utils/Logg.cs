@@ -5,7 +5,8 @@ namespace UniCore.Utils
 {
     public class Logg
     {
-        public const string FORMAT = "{0} | {1} | {2}";
+        public const string PREFIX_FORMAT = "{0} | {1} | {2}";
+        public const string DEFAULT_FORMAT = "{0} | {1}";
 
         #region Instanciable
 
@@ -92,8 +93,15 @@ namespace UniCore.Utils
         private static string Format(string txt, string prefix)
         {
             string date = DateTime.UtcNow.ToString("o");
-            prefix = prefix == null ? "Default" : prefix;
-            return string.Format(FORMAT, date, prefix, txt);
+
+            if (string.IsNullOrWhiteSpace(prefix))
+            {
+                return string.Format(DEFAULT_FORMAT, date, txt);
+            }
+            else
+            {
+                return string.Format(PREFIX_FORMAT, date, prefix, txt);
+            }
         }
         #endregion
     }
