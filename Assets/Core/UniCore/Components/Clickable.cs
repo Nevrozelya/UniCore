@@ -25,14 +25,12 @@ namespace UniCore.Components
 
         public IObservable<ClickEvent> ClickEvent => ExhaustiveClickEvent.Where(e => !e.IsPressed && e.IsLeftButton);
 
-        private Subject<ClickEvent> _click;
+        private Subject<ClickEvent> _click = new();
         private bool _isCancelledByDrag;
         private IDisposable _cancellationDisposable;
 
         private void Awake()
         {
-            _click = new();
-
             Draggable drag = GetComponent<Draggable>();
 
             if (drag != null)

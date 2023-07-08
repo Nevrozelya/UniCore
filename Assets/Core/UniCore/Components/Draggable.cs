@@ -28,12 +28,7 @@ namespace UniCore.Components
     {
         public IObservable<DragEvent> DragEvent => _drag.AsObservable();
 
-        private Subject<DragEvent> _drag;
-
-        private void Awake()
-        {
-            _drag = new();
-        }
+        private Subject<DragEvent> _drag = new();
 
         private void OnDestroy()
         {

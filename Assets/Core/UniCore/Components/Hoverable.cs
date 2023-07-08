@@ -9,12 +9,7 @@ namespace UniCore.Components
     {
         public IObservable<bool> HoverEvent => _hover.AsObservable();
 
-        private Subject<bool> _hover;
-
-        private void Awake()
-        {
-            _hover = new();
-        }
+        private Subject<bool> _hover = new();
 
         private void OnDestroy()
         {
