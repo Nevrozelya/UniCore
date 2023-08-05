@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UniRx;
 
-namespace UniCore.Refinement.UniRx
+namespace UniCore.Refinements.UniRx
 {
     public static class UniRxExtensions
     {
