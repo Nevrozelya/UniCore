@@ -29,7 +29,7 @@ namespace UniCore.Systems.Navigation
 
         public void Initialize()
         {
-            MainScenes = new();
+            MainScenes = new(null);
             ContextScenes = new();
             TransitionScenes = new();
         }

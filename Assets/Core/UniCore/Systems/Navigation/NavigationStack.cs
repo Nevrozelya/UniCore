@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using UniCore.Extensions;
 using UniCore.Utils;
 using UnityEngine.SceneManagement;
 
@@ -39,7 +40,7 @@ namespace UniCore.Systems.Navigation
             {
                 return SceneManager.GetActiveScene();
             }
-            else
+            else if (!_mainSceneNames.IsNullOrEmpty())
             {
                 int countLoaded = SceneManager.sceneCount;
                 for (int i = 0; i < countLoaded; i++)
