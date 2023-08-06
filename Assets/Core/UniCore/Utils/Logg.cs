@@ -1,4 +1,5 @@
 ﻿using System;
+using UniCore.Extensions;
 using UnityEngine;
 
 namespace UniCore.Utils
@@ -16,6 +17,17 @@ namespace UniCore.Utils
         public Logg(string prefix, bool isEnabled = true)
         {
             _prefix = prefix;
+            IsEnabled = isEnabled;
+        }
+
+        public Logg(object source, bool isEnabled = true)
+        {
+            if (source != null)
+            {
+                string type = source.GetType().ToString();
+                _prefix = type.LastOfSplit();
+            }
+
             IsEnabled = isEnabled;
         }
 
