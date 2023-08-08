@@ -1,7 +1,7 @@
 ﻿using UniRx;
 using UnityEngine;
 
-namespace UniCore.Refinements.UniRx
+namespace UniCore.Refinements.Reactive
 {
     public class NormalizedReactiveProperty : ReactiveProperty<float>
     {
