@@ -14,3 +14,8 @@ A project used to regroup common dependencies of Nevrozelya's projects, based on
 
 1) Import `UniCore` in Unity Packages Manager via git url : `https://github.com/Nevrozelya/UniCore.git?path=Assets`.
 2) That's it!
+
+## Update Newtonsoft dependency
+- Import `com.unity.nuget.newtonsoft-json` via Unity Packages Manager.
+- If `Assets/Dependencies/com.unity.nuget.newtonsoft-json@[version]` is older that the version downloaded at `Library/PackageCache/com.unity.nuget.newtonsoft-json@[version]`, replace it!
+- If replaced, revert changes on `Packages/manifest.json` and `Packages/packages-lock.json` files.
