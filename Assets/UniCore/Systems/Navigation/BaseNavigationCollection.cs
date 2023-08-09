@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UniCore.Extensions;
 using UniCore.Utils;
 
 namespace UniCore.Systems.Navigation
@@ -12,6 +13,16 @@ namespace UniCore.Systems.Navigation
         {
             _log = new(this);
             _existingSceneNames = new(existingScenes);
+        }
+
+        public bool IsExisting(string sceneName)
+        {
+            if (!_existingSceneNames.IsNullOrEmpty())
+            {
+                return _existingSceneNames.Contains(sceneName);
+            }
+
+            return true;
         }
     }
 }

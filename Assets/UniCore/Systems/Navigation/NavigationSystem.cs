@@ -1,35 +1,25 @@
-﻿using System.Collections.Generic;
-using UniCore.Extensions;
-using Zenject;
-
-namespace UniCore.Systems.Navigation
+﻿namespace UniCore.Systems.Navigation
 {
-    public class NavigationSystem : IInitializable
+    public class NavigationSystem
     {
         public NavigationStack MainScenes { get; private set; }
         public NavigationGroup ContextScenes { get; private set; }
         public NavigationGroup TransitionScenes { get; private set; }
 
-        private HashSet<string> _mainSceneNames;
-
-        public NavigationSystem(params string[] mainSceneNames)
+        public NavigationSystem(NavigationSetup setup)
         {
-            _mainSceneNames = new();
-
-            if (mainSceneNames.IsNullOrEmpty())
+            if (setup == null)
             {
-                foreach (string sceneName in mainSceneNames)
-                {
-                    _mainSceneNames.Add(sceneName);
-                }
+                MainScenes = new();
+                ContextScenes = new();
+                TransitionScenes = new();
             }
-        }
-
-        public void Initialize()
-        {
-            MainScenes = new(null);
-            ContextScenes = new();
-            TransitionScenes = new();
+            else
+            {
+                MainScenes = new(setup.MainSceneNames);
+                ContextScenes = new(setup.ContextSceneNames);
+                TransitionScenes = new(setup.TransitionSceneNames);
+            }
         }
     }
 }
