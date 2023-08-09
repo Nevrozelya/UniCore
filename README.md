@@ -12,5 +12,5 @@ A project used to regroup common dependencies of Nevrozelya's projects, based on
 
 ## Installation
 
-1) Import `UniCore` in Unity Packages Manager via git url : `https://github.com/Nevrozelya/UniCore.git?path=Assets/Core`.
+1) Import `UniCore` in Unity Packages Manager via git url : `https://github.com/Nevrozelya/UniCore.git?path=Assets`.
 2) That's it!
