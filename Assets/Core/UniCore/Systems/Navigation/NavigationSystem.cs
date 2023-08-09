@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UniCore.Extensions;
-using UnityEngine.SceneManagement;
 using Zenject;
 
 namespace UniCore.Systems.Navigation
@@ -11,7 +10,6 @@ namespace UniCore.Systems.Navigation
         public NavigationGroup ContextScenes { get; private set; }
         public NavigationGroup TransitionScenes { get; private set; }
 
-        public Scene MainScene => MainScenes.Current.Scene;
         private HashSet<string> _mainSceneNames;
 
         public NavigationSystem(params string[] mainSceneNames)

@@ -7,10 +7,28 @@ namespace UniCore.Systems.Navigation
 {
     public static class NavigationUtils
     {
-        public static async UniTask<Scene?> SwapAsync(string sceneToLoadName, string sceneToUnloadName, CancellationToken token)
+        public static async UniTask<Scene?> SwapLoadAsync(string sceneToLoadName, string sceneToUnloadName, CancellationToken token)
         {
             Scene? loadedScene = await LoadAsync(sceneToLoadName, token);
-            await UnloadAsyc(sceneToUnloadName, token);
+
+            if (loadedScene.HasValue)
+            {
+                await UnloadAsyc(sceneToUnloadName, token);
+            }
+
+            return loadedScene;
+        }
+
+        public static async UniTask<Scene?> SwapUnloadAsync(string sceneToLoadName, string sceneToUnloadName, CancellationToken token)
+        {
+            Scene? loadedScene = null;
+
+            bool isUnloaded = await UnloadAsyc(sceneToUnloadName, token);
+
+            if (isUnloaded)
+            {
+                loadedScene = await LoadAsync(sceneToLoadName, token);
+            }
 
             return loadedScene;
         }
@@ -21,7 +39,7 @@ namespace UniCore.Systems.Navigation
 
             Scene? result = null;
 
-            UnityAction<Scene, LoadSceneMode> callback = (s, m) =>
+            UnityAction<Scene, LoadSceneMode> callback = (s, _) =>
             {
                 if (s.name == sceneToLoadName) // Might not be the case if another scene in loaded in the same time
                 {
@@ -45,7 +63,11 @@ namespace UniCore.Systems.Navigation
 
         public static async UniTask<bool> UnloadAsyc(string sceneToUnloadName, CancellationToken token)
         {
-            UniTask task = SceneManager.UnloadSceneAsync(sceneToUnloadName).WithCancellation(token);
+            UniTask task = SceneManager.UnloadSceneAsync(
+                sceneToUnloadName,
+                UnloadSceneOptions.UnloadAllEmbeddedSceneObjects)
+            .WithCancellation(token);
+
             await task;
             return task.Status == UniTaskStatus.Succeeded;
         }

@@ -3,35 +3,42 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using UniCore.Extensions;
-using UniCore.Utils;
+using UniRx;
 using UnityEngine.SceneManagement;
 
 namespace UniCore.Systems.Navigation
 {
-    public class NavigationStack : IDisposable
+    public class NavigationStack : BaseNavigationCollection, IDisposable
     {
-        public NavigationEntry Current { get; private set; }
+        public ReactiveProperty<NavigationEntry> Current { get; private set; }
+        public Scene Scene => Current.Value?.Scene ?? default;
 
         private Stack<NavigationEntry> _stack;
-        private HashSet<string> _mainSceneNames;
-        private Logg _log;
+        private CancellationTokenSource _initUnloadToken;
 
-        public NavigationStack(HashSet<string> mainSceneNames)
+        public NavigationStack(params string[] existings) : base(existings)
         {
-            _log = new(this);
             _stack = new();
-            _mainSceneNames = mainSceneNames;
 
-            Scene? current = CurrentMainScene();
+            NavigationEntry entry = null;
+            Scene? scene = CurrentMainScene();
 
-            if (current.HasValue)
+            if (scene.HasValue)
             {
-                Current = new(current.Value, null);
+                entry = new(scene.Value);
             }
             else
             {
                 _log.Error("No current main scene found at start!");
             }
+
+            Current = new(entry);
+        }
+
+        public void Dispose()
+        {
+            _initUnloadToken.CancelAndDispose();
+            Current.Dispose();
         }
 
         private Scene? CurrentMainScene()
@@ -40,38 +47,48 @@ namespace UniCore.Systems.Navigation
             {
                 return SceneManager.GetActiveScene();
             }
-            else if (!_mainSceneNames.IsNullOrEmpty())
+            else if (!_existingSceneNames.IsNullOrEmpty())
             {
+                Scene? result = null;
                 int countLoaded = SceneManager.sceneCount;
+
                 for (int i = 0; i < countLoaded; i++)
                 {
                     Scene scene = SceneManager.GetSceneAt(i);
-                    if (_mainSceneNames.Contains(scene.name))
+
+                    if (_existingSceneNames.Contains(scene.name))
                     {
-                        return scene;
+                        if (!result.HasValue)
+                        {
+                            result = scene;
+                        }
+                        else
+                        {
+                            _initUnloadToken ??= new();
+                            NavigationUtils.UnloadAsyc(scene.name, _initUnloadToken.Token).Forget();
+                        }
                     }
                 }
             }
             return null;
         }
 
-        public void Dispose()
-        {
-        }
-
         public async UniTask PushAsync(string sceneName, object bundle, CancellationToken token)
         {
-            if (_stack.Count < 1)
-            {
-                return;
-            }
+            Scene? scene;
 
-            Scene? scene = await NavigationUtils.SwapAsync(sceneName, Current.Scene.name, token);
+            if (_stack.Count == 0)
+            {
+                scene = await NavigationUtils.LoadAsync(sceneName, token);
+            }
+            else
+            {
+                scene = await NavigationUtils.SwapLoadAsync(sceneName, Scene.name, token);
+            }
 
             if (scene.HasValue)
             {
-                Current = new(scene.Value, bundle);
-                _stack.Push(Current);
+                Apply(scene.Value, bundle);
             }
         }
 
@@ -79,13 +96,28 @@ namespace UniCore.Systems.Navigation
         {
             if (_stack.Count <= 1)
             {
+                _log.Error("Can't pop a stack to or from emptiness!");
                 return;
             }
 
             NavigationEntry sceneToUnload = _stack.Pop();
             NavigationEntry sceneToLoad = _stack.Peek();
 
-            Scene? scene = await NavigationUtils.SwapAsync(sceneToLoad.Scene.name, sceneToUnload.Scene.name, token);
+            Scene? scene = await NavigationUtils.SwapLoadAsync(sceneToLoad.SceneName, sceneToUnload.SceneName, token);
+
+            if (scene.HasValue)
+            {
+                Apply(scene.Value, sceneToLoad.Bundle);
+            }
+        }
+
+        private void Apply(Scene scene, object bundle)
+        {
+            NavigationEntry entry = new(scene, bundle);
+
+            _stack.Push(entry);
+            Current.Value = entry;
+            SceneManager.SetActiveScene(scene);
         }
     }
 }
