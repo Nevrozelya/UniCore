@@ -18,6 +18,11 @@ namespace UniCore.Extensions
             try
             {
                 token.Cancel();
+            }
+            catch { }
+
+            try
+            {
                 token.Dispose();
             }
             catch { }
