@@ -12,11 +12,13 @@ namespace UniCore.Examples.Navigation
         [SerializeField] private Button _popButton;
         [SerializeField] private Button _replaceAButton;
         [SerializeField] private Button _replaceBButton;
+        [SerializeField] private Button _resetContextBButton;
 
         public IObservable<Unit> PushAEvent => _pushAButton.OnClickAsObservable();
         public IObservable<Unit> PushBEvent => _pushBButton.OnClickAsObservable();
         public IObservable<Unit> PopEvent => _popButton.OnClickAsObservable();
         public IObservable<Unit> ReplaceAEvent => _replaceAButton.OnClickAsObservable();
         public IObservable<Unit> ReplaceBEvent => _replaceBButton.OnClickAsObservable();
+        public IObservable<Unit> ResetContextEvent => _resetContextBButton.OnClickAsObservable();
     }
 }

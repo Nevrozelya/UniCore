@@ -1,12 +1,17 @@
 ﻿using System;
 using UniCore.Systems.Navigation;
+using UniCore.Systems.Navigation.Collections;
 using Zenject;
 
 namespace UniCore.Examples.Navigation
 {
     public class NavigationService : IInitializable, IDisposable
     {
-        public NavigationSystem System { get; private set; }
+        public NavigationStack Main => _system.MainScenes;
+        public NavigationGroup Context => _system.ContextScenes;
+        public NavigationGroup Transition => _system.TransitionScenes;
+
+        private NavigationSystem _system;
 
         public void Initialize()
         {
@@ -26,16 +31,18 @@ namespace UniCore.Examples.Navigation
                 mainSceneNames,
                 contextSceneNames,
                 transitionSceneNames: null,
-                autoLoadContext: true,
-                allowMainSceneOverride: false
+                mainConduct: NavigationCollectionConduct.Replace,
+                contextConduct: NavigationCollectionConduct.Forbidden,
+                transitionConduct: NavigationCollectionConduct.Forbidden,
+                autoLoadContext: true
             );
 
-            System = new(setup);
+            _system = new(setup);
         }
 
         public void Dispose()
         {
-            System?.Dispose();
+            _system?.Dispose();
         }
     }
 }

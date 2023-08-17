@@ -9,10 +9,12 @@ namespace UniCore.Systems.Navigation.Collections
     {
         protected Logg _log;
         protected HashSet<string> _validScenes;
+        protected NavigationCollectionConduct _conduct;
 
-        public BaseNavigationCollection(string[] validScenes, Scene[] loadedScenes)
+        public BaseNavigationCollection(string[] validScenes, Scene[] loadedScenes, NavigationCollectionConduct conduct)
         {
             _log = new(this);
+            _conduct = conduct;
 
             if (!validScenes.IsNullOrEmpty())
             {

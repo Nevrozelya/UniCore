@@ -17,30 +17,59 @@ namespace UniCore.Systems.Navigation.Collections
         private ReactiveProperty<NavigationEntry> _current;
         private Stack<NavigationEntry> _stack;
         private CancellationTokenSource _initialUnloadToken;
+        private CancellationTokenSource _runtimeToken;
         private bool _initialSceneFound;
 
-        // Is used to know if this stack allows
-        // a push with the same name as the current scene.
-        // If this happen, it either returns, or
-        // override the current scene (with its bundle)
-        // in order to have only 1 instance
-        // of a given valid scene in the stack.
-        private bool _allowCurrentScenePush;
-
-        public NavigationStack(string[] validScenes, Scene[] loadedScenes, bool allowCurrentScenePush = false) : base(validScenes, loadedScenes)
+        public NavigationStack(string[] validScenes, Scene[] loadedScenes, NavigationCollectionConduct conduct) : base(validScenes, loadedScenes, conduct)
         {
-            // NOTE: Done after SetInitiallyLoadedScene() calls
-            _allowCurrentScenePush = allowCurrentScenePush;
+            // Note: Done after SetInitiallyLoadedScene() calls
             _stack ??= new();
         }
 
         public void Dispose()
         {
             _initialUnloadToken.CancelAndDispose();
+            _runtimeToken.CancelAndDispose();
             _current.Dispose();
         }
 
-        public async UniTask<bool> PopAsync(CancellationToken token)
+        public void Push(string sceneName, object bundle = null)
+        {
+            PushAwaitable(sceneName, bundle).Forget();
+        }
+
+        public UniTask PushAwaitable(string sceneName, object bundle = null)
+        {
+            _runtimeToken.CancelAndDispose();
+            _runtimeToken = new();
+            return PushAsync(sceneName, bundle, _runtimeToken.Token);
+        }
+
+        public void Pop()
+        {
+            PopAwaitable().Forget();
+        }
+
+        public UniTask PopAwaitable()
+        {
+            _runtimeToken.CancelAndDispose();
+            _runtimeToken = new();
+            return PopAsync(_runtimeToken.Token);
+        }
+
+        public void Replace(string sceneName, object bundle = null, bool unloadFirst = false)
+        {
+            ReplaceAwaitable(sceneName, bundle, unloadFirst).Forget();
+        }
+
+        public UniTask ReplaceAwaitable(string sceneName, object bundle = null, bool unloadFirst = false)
+        {
+            _runtimeToken.CancelAndDispose();
+            _runtimeToken = new();
+            return ReplaceAsync(sceneName, bundle, unloadFirst, _runtimeToken.Token);
+        }
+
+        private async UniTask<bool> PopAsync(CancellationToken token)
         {
             if (_stack.Count <= 1)
             {
@@ -65,7 +94,7 @@ namespace UniCore.Systems.Navigation.Collections
             return scene.HasValue;
         }
 
-        public async UniTask<bool> PushAsync(string sceneName, object bundle, CancellationToken token)
+        private async UniTask<bool> PushAsync(string sceneName, object bundle, CancellationToken token)
         {
             if (!IsValid(sceneName))
             {
@@ -82,14 +111,19 @@ namespace UniCore.Systems.Navigation.Collections
             {
                 if (_current.Value.SceneName == sceneName)
                 {
-                    if (_allowCurrentScenePush)
+                    if (_conduct == NavigationCollectionConduct.Replace)
                     {
                         // Just pop the current scene to override it, the Apply() will push the loaded scene!
                         _stack.Pop();
                     }
+                    else if (_conduct == NavigationCollectionConduct.Forbidden)
+                    {
+                        _log.Warning("Pushing the currently loaded scene is not permitted, change stack conduct if you want to allow it!");
+                        return false;
+                    }
                     else
                     {
-                        _log.Warning("Pushing the currently loaded scene is not permitted, create the stack with allowCurrentScenePush=true if you want to to allow it!");
+                        _log.Error($"Given conduct {_conduct} is not implemented, considered forbidden!");
                         return false;
                     }
                 }
@@ -106,23 +140,23 @@ namespace UniCore.Systems.Navigation.Collections
             return scene.HasValue;
         }
 
-        public async UniTask<bool> SoftReplaceAsync(string sceneName, object bundle, CancellationToken token)
+        private async UniTask<bool> SoftReplaceAsync(string sceneName, object bundle, CancellationToken token)
         {
             return await ReplaceAsync(sceneName, bundle, unloadFirst: false, token);
         }
 
-        public async UniTask<bool> ForceReplaceAsync(string sceneName, object bundle, CancellationToken token)
+        private async UniTask<bool> ForceReplaceAsync(string sceneName, object bundle, CancellationToken token)
         {
             return await ReplaceAsync(sceneName, bundle, unloadFirst: true, token);
         }
 
-        public async UniTask<bool> ReplaceAsync(string sceneName, object bundle, bool unloadFirst, CancellationToken token)
+        private async UniTask<bool> ReplaceAsync(string sceneName, object bundle, bool unloadFirst, CancellationToken token)
         {
             if (!IsValid(sceneName))
             {
                 return false;
             }
-            _log.Info("replace");
+
             Scene? scene;
 
             if (_stack.Count == 0)

@@ -23,44 +23,51 @@ namespace UniCore.Examples.Navigation
             _controller.PopEvent.Subscribe(OnPop).AddTo(_disposables);
             _controller.ReplaceAEvent.Subscribe(OnReplaceA).AddTo(_disposables);
             _controller.ReplaceBEvent.Subscribe(OnReplaceB).AddTo(_disposables);
+            _controller.ResetContextEvent.Subscribe(OnResetContext).AddTo(_disposables);
 
-            _navigation.System.MainScenes.Current.Subscribe(OnMainSceneChanged).AddTo(_disposables);
+            _navigation.Main.Current.Subscribe(OnMainSceneChanged).AddTo(_disposables);
         }
 
         private void OnMainSceneChanged(NavigationEntry entry)
         {
             Logg.Info("Navigated to : " + entry);
-            Logg.Info(_navigation.System.MainScenes);
+            Logg.Info(_navigation.Main);
         }
 
         private void OnPushA(Unit unit)
         {
             Logg.Info("Push A input");
-            _navigation.System.PushMainScene(NavigationConsts.MAIN_SCENE_A, _bundle++);
+            _navigation.Main.Push(NavigationConsts.MAIN_SCENE_A, _bundle++);
         }
 
         private void OnPushB(Unit unit)
         {
             Logg.Info("Push B input");
-            _navigation.System.PushMainScene(NavigationConsts.MAIN_SCENE_B, _bundle++);
+            _navigation.Main.Push(NavigationConsts.MAIN_SCENE_B, _bundle++);
         }
 
         private void OnPop(Unit unit)
         {
             Logg.Info("Pop input");
-            _navigation.System.PopMainScene();
+            _navigation.Main.Pop();
         }
 
         private void OnReplaceA(Unit unit)
         {
             Logg.Info("Replace A input");
-            _navigation.System.ReplaceMainScene(NavigationConsts.MAIN_SCENE_A, _bundle++);
+            _navigation.Main.Replace(NavigationConsts.MAIN_SCENE_A, _bundle++);
         }
 
         private void OnReplaceB(Unit unit)
         {
             Logg.Info("Replace B input");
-            _navigation.System.ReplaceMainScene(NavigationConsts.MAIN_SCENE_B, _bundle++);
+            _navigation.Main.Replace(NavigationConsts.MAIN_SCENE_B, _bundle++);
+        }
+
+        private void OnResetContext(Unit unit)
+        {
+            Logg.Info("Try to reset context");
+            _navigation.Context.Add(NavigationConsts.CONTEXT_SCENE, _bundle++);
         }
 
         public void Dispose()

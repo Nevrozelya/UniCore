@@ -16,7 +16,7 @@ namespace UniCore.Systems.Navigation.Collections
             Scene = scene;
             Bundle = bundle;
 
-            // NOTE: Those 2 are saved here
+            // Note: Those 2 are saved here
             // and not directly returned via => Scene.name
             // because they are empty when the Scene
             // is not loaded!

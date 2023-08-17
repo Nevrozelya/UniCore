@@ -16,10 +16,11 @@ namespace UniCore.Systems.Navigation.Collections
 
         private ReactiveCollection<NavigationEntry> _current;
         private CancellationTokenSource _autoLoadToken;
+        private CancellationTokenSource _runtimeToken;
 
-        public NavigationGroup(string[] validScenes, Scene[] loadedScenes, bool autoLoad = false) : base(validScenes, loadedScenes)
+        public NavigationGroup(string[] validScenes, Scene[] loadedScenes, NavigationCollectionConduct conduct, bool autoLoad = false) : base(validScenes, loadedScenes, conduct)
         {
-            // NOTE: Done after SetInitiallyLoadedScene() calls
+            // Note: Done after SetInitiallyLoadedScene() calls
 
             _current ??= new();
 
@@ -37,21 +38,55 @@ namespace UniCore.Systems.Navigation.Collections
         public void Dispose()
         {
             _autoLoadToken.CancelAndDispose();
+            _runtimeToken.CancelAndDispose();
             _current.Dispose();
+        }
+
+        public void Add(string sceneName, object bundle = null)
+        {
+            AddAwaitable(sceneName, bundle).Forget();
+        }
+
+        public UniTask AddAwaitable(string sceneName, object bundle = null)
+        {
+            _runtimeToken ??= new();
+            return AddAsync(sceneName, bundle, _runtimeToken.Token);
+        }
+
+        public void Remove(string sceneName)
+        {
+            RemoveAwaitable(sceneName).Forget();
+        }
+
+        public UniTask RemoveAwaitable(string sceneName)
+        {
+            _runtimeToken ??= new();
+            return RemoveAsync(sceneName, _runtimeToken.Token);
         }
 
         public async UniTask AddAsync(string sceneName, object bundle, CancellationToken token)
         {
             if (!IsValid(sceneName))
             {
-                _log.Error($"Given scene name ({sceneName}) is not valid!");
                 return;
             }
 
             if (_current.Any(s => s.SceneName == sceneName))
             {
-                _log.Warning($"Given scene ({sceneName}) is already loaded!");
-                return;
+                if (_conduct == NavigationCollectionConduct.Replace)
+                {
+                    await RemoveAsync(sceneName, token);
+                }
+                else if (_conduct == NavigationCollectionConduct.Forbidden)
+                {
+                    _log.Warning($"Adding a currently loaded scene is not permitted, change stack conduct if you want to allow it!");
+                    return;
+                }
+                else
+                {
+                    _log.Error($"Given conduct {_conduct} is not implemented, considered forbidden!");
+                    return;
+                }
             }
 
             Scene? scene = await NavigationUtils.LoadAsync(sceneName, token);
