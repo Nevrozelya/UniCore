@@ -8,21 +8,24 @@ namespace CTA.Core.Utils
     {
         private const string LOG = "JSON";
 
-        public static bool TryDeserialize<T>(string json, out T result)
+        public static bool TryParse<T>(string json, out T result)
         {
             try
             {
                 result = JsonConvert.DeserializeObject<T>(json);
+
                 if (result == null)
                 {
                     return false;
                 }
+
                 return true;
             }
             catch (Exception e)
             {
                 Logg.Error(e.Message, LOG);
                 result = default(T);
+
                 return false;
             }
         }
@@ -42,12 +45,14 @@ namespace CTA.Core.Utils
                 {
                     return false;
                 }
+
                 return true;
             }
             catch (Exception e)
             {
                 Logg.Error(e.Message, LOG);
                 json = string.Empty;
+
                 return false;
             }
         }
@@ -58,7 +63,7 @@ namespace CTA.Core.Utils
 
             if (TrySerialize(input, out string json, indent: false))
             {
-                if (TryDeserialize(json, out remapped))
+                if (TryParse(json, out remapped))
                 {
                     return true;
                 }
