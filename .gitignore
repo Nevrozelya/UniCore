@@ -290,8 +290,5 @@ crashlytics-build.properties
 /[Aa]ssets/[Dd]ata/[Ss]criptables/EnvVariables.asset
 /[Aa]ssets/[Dd]ata/[Ss]criptables/EnvVariables.asset.meta
 
-# Card exports in png
-/[Cc]ard[Ee]xports/
-
 ## Included
 !.gitkeep
