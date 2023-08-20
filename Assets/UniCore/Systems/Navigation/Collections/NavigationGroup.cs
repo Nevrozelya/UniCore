@@ -115,7 +115,7 @@ namespace UniCore.Systems.Navigation.Collections
                 _current.Remove(existing);
             }
 
-            // Note : we prefere iterate twice (FirstOrDefault & Remove)
+            // Note : We prefere iterate twice (FirstOrDefault & Remove)
             // than create a temp list to RemoveAt index with
             // int index = Currents.ToList().FindIndex(s => s.SceneName == sceneName);
             // because we won't ever have insanely high numbers on scenes

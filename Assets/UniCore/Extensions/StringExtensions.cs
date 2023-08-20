@@ -25,7 +25,7 @@ namespace UniCore.Extensions
 
         public static string SanitizeBackslashes(this string text)
         {
-            return text.Replace("\\", "/");
+            return text.Replace('\\', '/');
         }
 
         public static string SanitizeEnum(this object obj, bool useDash = true)

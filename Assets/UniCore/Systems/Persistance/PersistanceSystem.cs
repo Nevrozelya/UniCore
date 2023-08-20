@@ -2,9 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Threading;
 using UniCore.Extensions;
 using UniCore.Utils;
+using UnityEngine;
 
 namespace UniCore.Systems.Persistance
 {
@@ -17,9 +19,10 @@ namespace UniCore.Systems.Persistance
         private CancellationTokenSource _readToken;
         private CancellationTokenSource _writeToken;
 
-        public PersistanceSystem(string path)
+        public PersistanceSystem(string relativeFilePath)
         {
-            _path = path;
+            // Note: relativeFilePath must be containing filename & extension
+            _path = Path.Combine(Application.persistentDataPath, relativeFilePath).SanitizeBackslashes();
             Read();
         }
 
