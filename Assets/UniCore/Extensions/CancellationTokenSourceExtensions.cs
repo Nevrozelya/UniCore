@@ -11,9 +11,13 @@ namespace UniCore.Extensions
                 return;
             }
 
-            // Try/catch needed in case the token has already been disposed,
-            // and there is no easy way to check if already disposed
+            // Try/catch needed in case the token has already been cancelled/disposed,
+            // and there is no easy way to check if already cancelled/disposed
             // without reflection or token class inheritance.
+
+            // We decided to separator Cancel() and Dispose()
+            // in two separate try/catch blocks so a failed Cancel()
+            // doesn't prevent Dispose() from happening!
 
             try
             {
@@ -26,6 +30,12 @@ namespace UniCore.Extensions
                 token.Dispose();
             }
             catch { }
+        }
+
+        public static CancellationTokenSource Renew(this CancellationTokenSource token)
+        {
+            token.CancelAndDispose();
+            return new CancellationTokenSource();
         }
     }
 }
