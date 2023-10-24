@@ -34,5 +34,24 @@ namespace UniCore.Extensions
             }
             return null;
         }
+
+        public static T[] Randomize<T>(this T[] items)
+        {
+            Random rand = new();
+            T[] result = (T[])items.Clone();
+
+            // For each spot in the array, pick
+            // a random item to swap into that spot.
+
+            for (int i = 0; i < result.Length - 1; i++)
+            {
+                int j = rand.Next(i, result.Length);
+                T temp = result[i];
+                result[i] = result[j];
+                result[j] = temp;
+            }
+
+            return result;
+        }
     }
 }
