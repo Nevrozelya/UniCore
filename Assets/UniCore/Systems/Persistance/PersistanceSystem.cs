@@ -113,6 +113,8 @@ namespace UniCore.Systems.Persistance
                 return null;
             }
 
+            value = value.Replace(',', '.');
+
             if (float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out float parsed))
             {
                 return parsed;
