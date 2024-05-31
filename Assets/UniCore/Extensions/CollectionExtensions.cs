@@ -6,6 +6,11 @@ namespace UniCore.Extensions
 {
     public static class CollectionExtensions
     {
+        public static bool IsNullOrEmpty<T>(this IEnumerable<T> enumerable)
+        {
+            return enumerable == null || enumerable.Count() == 0;
+        }
+
         public static bool IsNullOrEmpty<T>(this ICollection<T> collection)
         {
             return collection == null || collection.Count == 0;
