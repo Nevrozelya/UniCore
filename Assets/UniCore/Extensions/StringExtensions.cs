@@ -8,9 +8,13 @@ namespace UniCore.Extensions
         public static string ToFirstLetterUppercase(this string text)
         {
             if (string.IsNullOrWhiteSpace(text))
+            {
                 return text;
+            }
             else if (text.Length < 2)
+            {
                 return text.ToUpper();
+            }
 
             return $"{char.ToUpper(text[0])}{text.Substring(1)}";
         }
@@ -18,7 +22,9 @@ namespace UniCore.Extensions
         public static string ToUppercaseUnderscore(this string text)
         {
             if (string.IsNullOrWhiteSpace(text))
+            {
                 return text;
+            }
 
             return text.ToUpper().Replace('-', '_');
         }

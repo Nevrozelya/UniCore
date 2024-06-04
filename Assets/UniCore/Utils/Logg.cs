@@ -10,7 +10,6 @@ namespace UniCore.Utils
         public const string DEFAULT_FORMAT = "{0} | {1}";
 
         #region Instanciable
-
         public bool IsEnabled { get; set; }
         private string _prefix;
 
@@ -34,37 +33,49 @@ namespace UniCore.Utils
         public void Info(string message)
         {
             if (IsEnabled)
+            {
                 Info(message, _prefix);
+            }
         }
 
         public void Info(object obj)
         {
             if (IsEnabled)
+            {
                 Info(obj, _prefix);
+            }
         }
 
         public void Warning(string message)
         {
             if (IsEnabled)
+            {
                 Warning(message, _prefix);
+            }
         }
 
         public void Warning(object obj)
         {
             if (IsEnabled)
+            {
                 Warning(obj, _prefix);
+            }
         }
 
         public void Error(string message)
         {
             if (IsEnabled)
+            {
                 Error(message, _prefix);
+            }
         }
 
         public void Error(object obj)
         {
             if (IsEnabled)
+            {
                 Error(obj, _prefix);
+            }
         }
         #endregion
 
