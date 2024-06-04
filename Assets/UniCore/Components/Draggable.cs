@@ -26,7 +26,9 @@ namespace UniCore.Components
 
     public class Draggable : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
     {
-        public IObservable<DragEvent> DragEvent => _drag.AsObservable();
+        public bool IsDragging { get; private set; }
+
+        public IObservable<DragEvent> DragEvent => _drag;
 
         private Subject<DragEvent> _drag = new();
 
@@ -44,6 +46,8 @@ namespace UniCore.Components
 
         public void OnPointerUp(PointerEventData eventData)
         {
+            IsDragging = false;
+
             bool isLeftButton = eventData.button == PointerEventData.InputButton.Left;
             DragEvent evt = new(DragPhase.End, default, isLeftButton);
             _drag.OnNext(evt);
@@ -51,6 +55,8 @@ namespace UniCore.Components
 
         public void OnDrag(PointerEventData eventData)
         {
+            IsDragging = true;
+
             bool isLeftButton = eventData.button == PointerEventData.InputButton.Left;
             DragEvent evt = new(DragPhase.Dragging, eventData.delta, isLeftButton);
             _drag.OnNext(evt);
