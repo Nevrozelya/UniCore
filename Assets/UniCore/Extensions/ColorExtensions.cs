@@ -11,7 +11,10 @@ namespace UniCore.Extensions
 
         public static Color WithIntensity(this Color color, float intensity)
         {
-            return color * Mathf.LinearToGammaSpace(intensity);
+            //return color * Mathf.LinearToGammaSpace(intensity);
+
+            float factor = Mathf.Pow(2, intensity);
+            return color * factor;
         }
 
         public static string ToHexa(this Color color, bool withAlpha = false)
