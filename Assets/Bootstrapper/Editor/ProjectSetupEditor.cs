@@ -22,8 +22,9 @@ namespace UniCore.Editor
             string vContainerUrl = "https://github.com/hadashiA/VContainer.git?path=VContainer/Assets/VContainer";
             string uniTaskUrl = "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask";
             string uniRxUrl = "https://github.com/neuecc/UniRx.git?path=Assets/Plugins/UniRx/Scripts";
+            string unicoreUrl = "https://github.com/Nevrozelya/UniCore.git?path=Assets/Runtime";
 
-            string[] urls = new[] { newtonsoftName, vContainerUrl, uniTaskUrl, uniRxUrl };
+            string[] urls = new[] { newtonsoftName, vContainerUrl, uniTaskUrl, uniRxUrl, unicoreUrl };
             return urls;
         }
 
