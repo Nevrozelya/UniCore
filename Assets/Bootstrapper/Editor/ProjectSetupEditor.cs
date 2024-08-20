@@ -10,7 +10,12 @@ namespace UniCore.Editor
         public static void Setup()
         {
             SetupFolders();
+            SetupPackages();
+        }
 
+        [MenuItem("UniCore/Packages Only")]
+        private static void SetupPackages()
+        {
             string[] packagesToAdd = PackagesToAdd();
             string[] packagesToRemove = PackagesToRemove();
             Client.AddAndRemove(packagesToAdd, packagesToRemove);
@@ -42,6 +47,7 @@ namespace UniCore.Editor
             return urls;
         }
 
+        [MenuItem("UniCore/Folders Only")]
         private static void SetupFolders()
         {
             // Delete useless assets
