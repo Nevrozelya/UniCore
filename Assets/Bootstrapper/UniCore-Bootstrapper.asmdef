@@ -1,6 +1,6 @@
 {
-    "name": "UniCore-Editor",
-    "rootNamespace": "UniCore.Editor",
+    "name": "UniCore-Bootstrapper",
+    "rootNamespace": "UniCore.Bootstrapper",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],

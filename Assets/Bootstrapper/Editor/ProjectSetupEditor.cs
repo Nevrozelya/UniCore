@@ -6,26 +6,42 @@ namespace UniCore.Editor
 {
     public static class ProjectSetupEditor
     {
-        [MenuItem("UniCore/Setup/Folders And Packages", priority = 0)]
-        public static void SetupFoldersAndPackages()
+        [MenuItem("UniCore/Setup")]
+        public static void Setup()
         {
             SetupFolders();
-            SetupPackages();
+
+            string[] packagesToAdd = PackagesToAdd();
+            string[] packagesToRemove = PackagesToRemove();
+            Client.AddAndRemove(packagesToAdd, packagesToRemove);
         }
 
-        [MenuItem("UniCore/Setup/Packages Only", priority = 2)]
-        public static void SetupPackages()
+        private static string[] PackagesToAdd()
         {
+            string newtonsoftName = "com.unity.nuget.newtonsoft-json";
             string vContainerUrl = "https://github.com/hadashiA/VContainer.git?path=VContainer/Assets/VContainer";
             string uniTaskUrl = "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask";
             string uniRxUrl = "https://github.com/neuecc/UniRx.git?path=Assets/Plugins/UniRx/Scripts";
 
-            string[] urls = new[] { vContainerUrl, uniTaskUrl, uniRxUrl };
-            Client.AddAndRemove(packagesToAdd: urls);
+            string[] urls = new[] { newtonsoftName, vContainerUrl, uniTaskUrl, uniRxUrl };
+            return urls;
         }
 
-        [MenuItem("UniCore/Setup/Folders Only", priority = 1)]
-        public static void SetupFolders()
+        private static string[] PackagesToRemove()
+        {
+            string unicoreBootstrapper = "com.nevrozelya.unicore-bootstrapper";
+            string visualScripting = "com.unity.visualscripting";
+            string collab = "com.unity.collab-proxy";
+            string timeline = "com.unity.timeline";
+            string test = "com.unity.test-framework";
+            string rider = "com.unity.ide.rider";
+            string aiNav = "com.unity.ai.navigation";
+
+            string[] urls = new[] { unicoreBootstrapper, visualScripting, collab, timeline, test, rider, aiNav };
+            return urls;
+        }
+
+        private static void SetupFolders()
         {
             // Delete useless assets
             DeleteFolder("TutorialInfo");

@@ -1,0 +1,7 @@
+{
+	"name": "com.nevrozelya.unicore-bootstrapper",
+	"displayName": "UniCore Bootstrapper",
+	"version": "1.0.0",
+	"description": "UniCore's bootstrapper.",
+	"unity": "2022.2"
+}
