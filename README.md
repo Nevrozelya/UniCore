@@ -18,4 +18,11 @@ Some common usage features that are embeded here to be easily re-used.
 - **[UniCore](https://github.com/Nevrozelya/UniCore)** *(runtime)* : `https://github.com/Nevrozelya/UniCore.git?path=Assets/Runtime`
 
 - **[Extenject](https://github.com/Mathijs-Bakker/Extenject)** *(for older projects only)* : `https://github.com/Mathijs-Bakker/Extenject.git?path=UnityProject/Assets/Plugins/Zenject/Source`
-- **[LINQ-to-GameObject-for-Unity](https://github.com/neuecc/LINQ-to-GameObject-for-Unity)** *(listed here for reference, not used)*
+
+## Worth considering libraries
+
+- **[MessagePack-CSharp](https://github.com/MessagePack-CSharp/MessagePack-CSharp)** : a highly performant serializer (for realtime multiplayer for example)
+- **[LiteNetLib](https://github.com/RevenantX/LiteNetLib)** : lite reliable UDP library
+- **[R3](https://github.com/Cysharp/R3)** : the successor of UniRx
+- **[VitalRouter](https://github.com/hadashiA/VitalRouter)** : a message passing library
+- **[LINQ-to-GameObject-for-Unity](https://github.com/neuecc/LINQ-to-GameObject-for-Unity)** : linq extension methods to access transforms hierarchy
