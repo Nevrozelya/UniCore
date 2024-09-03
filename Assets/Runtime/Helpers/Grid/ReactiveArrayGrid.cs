@@ -21,7 +21,8 @@ namespace UniCore.Helpers.Grid
 
         protected override void OnEdition(int x, int y, T previousValue, T newValue)
         {
-            ReactiveArrayGridEdition<T> edition = new(x, y, previousValue, newValue);
+            Coordinates position = new(x, y);
+            ReactiveArrayGridEdition<T> edition = new(position, previousValue, newValue);
             _editSubject.OnNext(edition);
         }
     }

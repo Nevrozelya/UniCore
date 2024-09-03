@@ -9,7 +9,7 @@ namespace UniCore.Helpers.Grid
         public abstract T this[Coordinates c] { get; }
         public abstract Coordinates? GetFirstCoordinates(Func<T, bool> predicate);
         public abstract Coordinates[] GetAllCoordinates(Func<T, bool> predicate);
-        public abstract void For(Action<int, int> callback);
-        public abstract void ForWithValue(Action<int, int, T> callback);
+        public abstract void For(Action<Coordinates> callback);
+        public abstract void ForWithValue(Action<Coordinates, T> callback);
     }
 }

@@ -38,10 +38,7 @@ namespace UniCore.Helpers.Grid
 
         public void Clear()
         {
-            For((x, y) =>
-            {
-                _grid[x][y] = default;
-            });
+            For(p => { _grid[p.X][p.Y] = default; });
         }
 
         public Coordinates? GetFirstCoordinates(Func<T, bool> predicate)
@@ -104,7 +101,7 @@ namespace UniCore.Helpers.Grid
             return result.ToArray();
         }
 
-        public void For(Action<int, int> callback)
+        public void For(Action<Coordinates> callback)
         {
             if (callback == null)
             {
@@ -115,12 +112,13 @@ namespace UniCore.Helpers.Grid
             {
                 for (int x = 0; x < Width; x++)
                 {
-                    callback.Invoke(x, y);
+                    Coordinates position = new(x, y);
+                    callback.Invoke(position);
                 }
             }
         }
 
-        public void ForWithValue(Action<int, int, T> callback)
+        public void ForWithValue(Action<Coordinates, T> callback)
         {
             if (callback == null)
             {
@@ -132,7 +130,8 @@ namespace UniCore.Helpers.Grid
                 for (int x = 0; x < Width; x++)
                 {
                     T model = _grid[x][y];
-                    callback.Invoke(x, y, model);
+                    Coordinates position = new(x, y);
+                    callback.Invoke(position, model);
                 }
             }
         }
@@ -157,12 +156,9 @@ namespace UniCore.Helpers.Grid
 
         private T Get(int x, int y)
         {
-            if (x >= 0 && x < Width)
+            if (AreValid(x, y))
             {
-                if (y >= 0 && y < Height)
-                {
-                    return _grid[x][y];
-                }
+                return _grid[x][y];
             }
 
             return default;
@@ -170,12 +166,17 @@ namespace UniCore.Helpers.Grid
 
         private void Set(int x, int y, T value)
         {
-            if (x >= 0 && y >= 0 && x < Width && y < Height)
+            if (AreValid(x, y))
             {
                 T previous = _grid[x][y];
                 _grid[x][y] = value;
                 OnEdition(x, y, previous, value);
             }
+        }
+
+        private bool AreValid(int x, int y)
+        {
+            return x >= 0 && y >= 0 && x < Width && y < Height;
         }
     }
 }

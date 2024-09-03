@@ -2,17 +2,13 @@ namespace UniCore.Helpers.Grid
 {
     public struct ReactiveArrayGridEdition<T>
     {
-        public readonly int X;
-        public readonly int Y;
-
+        public readonly Coordinates Position;
         public readonly T PreviousValue;
         public readonly T NewValue;
 
-        public ReactiveArrayGridEdition(int x, int y, T previousValue, T newValue)
+        public ReactiveArrayGridEdition(Coordinates position, T previousValue, T newValue)
         {
-            X = x;
-            Y = y;
-
+            Position = position;
             PreviousValue = previousValue;
             NewValue = newValue;
         }
