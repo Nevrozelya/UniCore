@@ -1,8 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
-using UniCore.Utils;
 
-namespace CTA.Core.Utils
+namespace UniCore.Utils
 {
     public static class JSON
     {
@@ -36,10 +35,12 @@ namespace CTA.Core.Utils
 
             try
             {
-                json = JsonConvert.SerializeObject(obj, formatting, new JsonSerializerSettings
-                {
-                    NullValueHandling = NullValueHandling.Ignore
-                });
+                json = JsonConvert.SerializeObject
+                (
+                    obj,
+                    formatting,
+                    new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }
+                );
 
                 if (string.IsNullOrWhiteSpace(json))
                 {
