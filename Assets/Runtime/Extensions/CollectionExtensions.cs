@@ -21,6 +21,36 @@ namespace UniCore.Extensions
             return array == null || array.Length == 0;
         }
 
+        public static int SafeCount<T>(this IEnumerable<T> enumerable)
+        {
+            if (enumerable == null)
+            {
+                return 0;
+            }
+
+            return enumerable.Count();
+        }
+
+        public static int SafeCount<T>(this ICollection<T> collection)
+        {
+            if (collection == null)
+            {
+                return 0;
+            }
+
+            return collection.Count;
+        }
+
+        public static int SafeLength<T>(this T[] array)
+        {
+            if (array == null)
+            {
+                return 0;
+            }
+
+            return array.Length;
+        }
+
         public static bool None<T>(this IEnumerable<T> source, Func<T, bool> predicate)
         {
             return !source.Any(predicate);
