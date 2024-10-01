@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Cysharp.Threading.Tasks;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading;
 using UniCore.Extensions;
 using UnityEngine;
 
@@ -6,7 +10,10 @@ namespace UniCore.Utils
 {
     public class Logg
     {
-        public const string PREFIX_FORMAT = "{0} | {1} | {2}";
+        public const string DEFAULT_JOIN_SEPARATOR = ", ";
+        public const string DEFAULT_DUMP_FILE_PREFIXE = "dump";
+
+        public const string PREFIXED_FORMAT = "{0} | {1} | {2}";
         public const string DEFAULT_FORMAT = "{0} | {1}";
 
         #region Instanciable
@@ -23,8 +30,7 @@ namespace UniCore.Utils
         {
             if (source != null)
             {
-                string type = source.GetType().ToString();
-                _prefix = type.LastOfSplit();
+                _prefix = source.GetType().ToString().LastOfSplit();
             }
 
             IsEnabled = isEnabled;
@@ -77,6 +83,46 @@ namespace UniCore.Utils
                 Error(obj, _prefix);
             }
         }
+
+        public void Jsonify(object obj)
+        {
+            if (IsEnabled)
+            {
+                Jsonify(obj, _prefix);
+            }
+        }
+
+        public void Dump(object obj)
+        {
+            if (IsEnabled)
+            {
+                Dump(obj, _prefix);
+            }
+        }
+
+        public void Join<T>(IEnumerable<T> enumerable, string separator = DEFAULT_JOIN_SEPARATOR)
+        {
+            if (IsEnabled)
+            {
+                Join(enumerable, separator, _prefix);
+            }
+        }
+
+        public void Join<T>(ICollection<T> collection, string separator = DEFAULT_JOIN_SEPARATOR)
+        {
+            if (IsEnabled)
+            {
+                Join(collection, separator, _prefix);
+            }
+        }
+
+        public void Join<T>(T[] array, string separator = DEFAULT_JOIN_SEPARATOR)
+        {
+            if (IsEnabled)
+            {
+                Join(array, separator, _prefix);
+            }
+        }
         #endregion
 
         #region Static
@@ -113,9 +159,75 @@ namespace UniCore.Utils
             Error(obj?.ToString(), prefix);
         }
 
+        public static void Jsonify(object obj, string prefix = null)
+        {
+            if (JSON.TrySerialize(obj, out string json))
+            {
+                Info(json, prefix);
+            }
+        }
+
+        public static string Dump(object obj, string filenamePrefix = DEFAULT_DUMP_FILE_PREFIXE)
+        {
+            if (Application.isEditor && JSON.TrySerialize(obj, out string json))
+            {
+                string date = DateTime.Now.ToString("dd-MM-yyyy_hh-mm-ss");
+                string filename;
+
+                if (string.IsNullOrWhiteSpace(filenamePrefix))
+                {
+                    filename = $"{date}.json";
+                }
+                else
+                {
+                    filename = $"{filenamePrefix}-{date}.json";
+                }
+
+                string path = Path.Combine(Application.persistentDataPath, filename);
+                FileUtils.TryWriteAsync(path, json, CancellationToken.None).Forget();
+
+                return path;
+            }
+
+            return null;
+        }
+
+        public static void Join<T>(IEnumerable<T> enumerable, string separator = DEFAULT_JOIN_SEPARATOR, string prefix = null)
+        {
+            if (enumerable.IsNullOrEmpty())
+            {
+                return;
+            }
+
+            string joined = string.Join(separator, enumerable);
+            Info(joined, prefix);
+        }
+
+        public static void Join<T>(ICollection<T> collection, string separator = DEFAULT_JOIN_SEPARATOR, string prefix = null)
+        {
+            if (collection.IsNullOrEmpty())
+            {
+                return;
+            }
+
+            string joined = string.Join(separator, collection);
+            Info(joined, prefix);
+        }
+
+        public static void Join<T>(T[] array, string separator = DEFAULT_JOIN_SEPARATOR, string prefix = null)
+        {
+            if (array.IsNullOrEmpty())
+            {
+                return;
+            }
+
+            string joined = string.Join(separator, array);
+            Info(joined, prefix);
+        }
+
         private static string Format(string txt, string prefix)
         {
-            string date = DateTime.UtcNow.ToString("o");
+            string date = DateTime.Now.ToString("o");
 
             if (string.IsNullOrWhiteSpace(prefix))
             {
@@ -123,7 +235,7 @@ namespace UniCore.Utils
             }
             else
             {
-                return string.Format(PREFIX_FORMAT, date, prefix, txt);
+                return string.Format(PREFIXED_FORMAT, date, prefix, txt);
             }
         }
         #endregion
