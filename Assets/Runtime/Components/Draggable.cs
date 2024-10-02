@@ -2,35 +2,38 @@
 using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using static UnityEngine.EventSystems.PointerEventData;
 
 namespace UniCore.Components
 {
     public enum DragPhase
     {
-        Start, Dragging, End
+        PointerDown, Start, Dragging, End
     }
 
-    public struct DragEvent
+    public readonly struct DragEvent
     {
-        public DragPhase Phase { get; private set; }
-        public Vector2 Step { get; private set; }
-        public bool IsLeftButton { get; private set; }
+        public readonly DragPhase Phase;
+        public readonly Vector2 Step;
+        public readonly InputButton Button;
 
-        public DragEvent(DragPhase phase, Vector2 step, bool isLeftButton)
+        public readonly bool IsLeftButton => Button == InputButton.Left;
+
+        public DragEvent(DragPhase phase, Vector2 step, InputButton button)
         {
             Phase = phase;
             Step = step;
-            IsLeftButton = isLeftButton;
+            Button = button;
         }
     }
 
     public class Draggable : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
     {
         public bool IsDragging { get; private set; }
-
         public IObservable<DragEvent> DragEvent => _drag;
 
         private Subject<DragEvent> _drag = new();
+        private int? _pointerId;
 
         private void OnDestroy()
         {
@@ -39,27 +42,49 @@ namespace UniCore.Components
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            bool isLeftButton = eventData.button == PointerEventData.InputButton.Left;
-            DragEvent evt = new(DragPhase.Start, default, isLeftButton);
-            _drag.OnNext(evt);
+            if (_pointerId.HasValue)
+            {
+                return;
+            }
+
+            _pointerId = eventData.pointerId;
+            IsDragging = false; // Should be useless, just in case
+
+            DragEvent pointerDownEvent = new(DragPhase.PointerDown, default, eventData.button);
+            _drag.OnNext(pointerDownEvent);
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
+            if (!_pointerId.HasValue || eventData.pointerId != _pointerId.Value)
+            {
+                return;
+            }
+
+            _pointerId = null;
             IsDragging = false;
 
-            bool isLeftButton = eventData.button == PointerEventData.InputButton.Left;
-            DragEvent evt = new(DragPhase.End, default, isLeftButton);
-            _drag.OnNext(evt);
+            DragEvent endEvent = new(DragPhase.End, default, eventData.button);
+            _drag.OnNext(endEvent);
         }
 
         public void OnDrag(PointerEventData eventData)
         {
+            if (!_pointerId.HasValue)
+            {
+                return; // Should never happen, just in case
+            }
+
+            if (!IsDragging)
+            {
+                DragEvent startEvent = new(DragPhase.Start, default, eventData.button);
+                _drag.OnNext(startEvent);
+            }
+
             IsDragging = true;
 
-            bool isLeftButton = eventData.button == PointerEventData.InputButton.Left;
-            DragEvent evt = new(DragPhase.Dragging, eventData.delta, isLeftButton);
-            _drag.OnNext(evt);
+            DragEvent dragEvent = new(DragPhase.Dragging, eventData.delta, eventData.button);
+            _drag.OnNext(dragEvent);
         }
     }
 }

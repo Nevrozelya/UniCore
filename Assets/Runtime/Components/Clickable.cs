@@ -3,18 +3,26 @@ using System.Linq;
 using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using static UnityEngine.EventSystems.PointerEventData;
 
 namespace UniCore.Components
 {
-    public struct ClickEvent
+    public enum ClickPhase
     {
-        public bool IsLeftButton { get; private set; }
-        public bool IsPressed { get; private set; }
+        Press, Release
+    }
 
-        public ClickEvent(bool isLeft, bool isPressed)
+    public readonly struct ClickEvent
+    {
+        public readonly ClickPhase Phase;
+        public readonly InputButton Button;
+
+        public readonly bool IsLeftButton => Button == InputButton.Left;
+
+        public ClickEvent(ClickPhase phase, InputButton button)
         {
-            IsLeftButton = isLeft;
-            IsPressed = isPressed;
+            Phase = phase;
+            Button = button;
         }
     }
 
@@ -22,8 +30,7 @@ namespace UniCore.Components
     {
         // Will happen for both left & right clicks, at press & release states
         public IObservable<ClickEvent> ExhaustiveClickEvent => _click.AsObservable();
-
-        public IObservable<ClickEvent> ClickEvent => ExhaustiveClickEvent.Where(e => !e.IsPressed && e.IsLeftButton);
+        public IObservable<ClickEvent> ClickEvent => ExhaustiveClickEvent.Where(e => e.Phase == ClickPhase.Release && e.IsLeftButton);
 
         private Subject<ClickEvent> _click = new();
         private bool _isCancelledByDrag;
@@ -31,17 +38,16 @@ namespace UniCore.Components
 
         private void Awake()
         {
-            Draggable drag = GetComponent<Draggable>();
+            bool dragFound = TryGetComponent(out Draggable drag);
 
-            if (drag != null)
+            if (!dragFound)
             {
-                _cancellationDisposable = drag.DragEvent
-                    .Where(e => e.Phase == DragPhase.Dragging)
-                    .Subscribe(e =>
-                    {
-                        _isCancelledByDrag = true;
-                    });
+                return;
             }
+
+            _cancellationDisposable = drag.DragEvent
+                .Where(e => e.Phase == DragPhase.Dragging)
+                .Subscribe(e => _isCancelledByDrag = true);
         }
 
         private void OnDestroy()
@@ -54,19 +60,19 @@ namespace UniCore.Components
         {
             _isCancelledByDrag = false;
 
-            bool isLeft = eventData.button == PointerEventData.InputButton.Left;
-            ClickEvent evt = new(isLeft, isPressed: true);
-            _click.OnNext(evt);
+            ClickEvent pressEvent = new(ClickPhase.Press, eventData.button);
+            _click.OnNext(pressEvent);
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            if (!_isCancelledByDrag)
+            if (_isCancelledByDrag)
             {
-                bool isLeft = eventData.button == PointerEventData.InputButton.Left;
-                ClickEvent evt = new(isLeft, isPressed: false);
-                _click.OnNext(evt);
+                return;
             }
+
+            ClickEvent releaseEvent = new(ClickPhase.Release, eventData.button);
+            _click.OnNext(releaseEvent);
         }
     }
 }
