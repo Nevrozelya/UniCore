@@ -1,5 +1,4 @@
-﻿using System;
-using UniRx;
+﻿using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -7,27 +6,23 @@ namespace UniCore.Components
 {
     public class Hoverable : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        public bool IsHovered { get; private set; }
+        public IReadOnlyReactiveProperty<bool> IsHovered => _isHovered;
 
-        public IObservable<bool> HoverEvent => _hover;
-
-        private Subject<bool> _hover = new();
+        private ReactiveProperty<bool> _isHovered = new();
 
         private void OnDestroy()
         {
-            _hover.Dispose();
+            _isHovered.Dispose();
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            IsHovered = true;
-            _hover.OnNext(true);
+            _isHovered.Value = true;
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            IsHovered = false;
-            _hover.OnNext(false);
+            _isHovered.Value = false;
         }
     }
 }
