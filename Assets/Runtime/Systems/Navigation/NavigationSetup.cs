@@ -4,15 +4,15 @@ namespace UniCore.Systems.Navigation
 {
     public class NavigationSetup
     {
-        public string[] MainSceneNames { get; private set; }
-        public string[] ContextSceneNames { get; private set; }
-        public string[] TransitionSceneNames { get; private set; }
+        public readonly string[] MainSceneNames;
+        public readonly string[] ContextSceneNames;
+        public readonly string[] TransitionSceneNames;
 
-        public NavigationCollectionConduct MainConduct { get; private set; }
-        public NavigationCollectionConduct ContextConduct { get; private set; }
-        public NavigationCollectionConduct TransitionConduct { get; private set; }
+        public readonly NavigationCollectionConduct MainConduct;
+        public readonly NavigationCollectionConduct ContextConduct;
+        public readonly NavigationCollectionConduct TransitionConduct;
 
-        public bool AutoLoadContext { get; private set; }
+        public readonly bool AutoLoadContext;
 
         public NavigationSetup(
             string[] mainSceneNames,
@@ -26,9 +26,11 @@ namespace UniCore.Systems.Navigation
             MainSceneNames = mainSceneNames;
             ContextSceneNames = contextSceneNames;
             TransitionSceneNames = transitionSceneNames;
+
             MainConduct = mainConduct;
             ContextConduct = contextConduct;
             TransitionConduct = transitionConduct;
+
             AutoLoadContext = autoLoadContext;
         }
     }

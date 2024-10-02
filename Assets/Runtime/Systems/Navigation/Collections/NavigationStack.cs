@@ -30,7 +30,7 @@ namespace UniCore.Systems.Navigation.Collections
         {
             _initialUnloadToken.CancelAndDispose();
             _runtimeToken.CancelAndDispose();
-            _current.Dispose();
+            _current?.Dispose();
         }
 
         public void Push(string sceneName, object bundle = null)
@@ -40,8 +40,7 @@ namespace UniCore.Systems.Navigation.Collections
 
         public UniTask PushAwaitable(string sceneName, object bundle = null)
         {
-            _runtimeToken.CancelAndDispose();
-            _runtimeToken = new();
+            _runtimeToken = _runtimeToken.Renew();
             return PushAsync(sceneName, bundle, _runtimeToken.Token);
         }
 
@@ -52,8 +51,7 @@ namespace UniCore.Systems.Navigation.Collections
 
         public UniTask PopAwaitable()
         {
-            _runtimeToken.CancelAndDispose();
-            _runtimeToken = new();
+            _runtimeToken = _runtimeToken.Renew();
             return PopAsync(_runtimeToken.Token);
         }
 
@@ -64,8 +62,7 @@ namespace UniCore.Systems.Navigation.Collections
 
         public UniTask ReplaceAwaitable(string sceneName, object bundle = null, bool unloadFirst = false)
         {
-            _runtimeToken.CancelAndDispose();
-            _runtimeToken = new();
+            _runtimeToken = _runtimeToken.Renew();
             return ReplaceAsync(sceneName, bundle, unloadFirst, _runtimeToken.Token);
         }
 

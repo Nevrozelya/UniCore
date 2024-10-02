@@ -81,7 +81,7 @@ namespace UniCore.Systems.Navigation
             while (!result.HasValue && timeout > 0 && !token.IsCancellationRequested)
             {
                 timeout -= UnityEngine.Time.deltaTime;
-                await UniTask.Yield();
+                await UniTask.Yield(); // No token here to ensure unsubscription
             }
 
             SceneManager.sceneLoaded -= callback;

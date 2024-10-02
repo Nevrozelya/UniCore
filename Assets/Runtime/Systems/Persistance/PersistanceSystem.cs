@@ -149,8 +149,7 @@ namespace UniCore.Systems.Persistance
 
         private void Read()
         {
-            _readToken.CancelAndDispose();
-            _readToken = new();
+            _readToken = _readToken.Renew();
             ReadAsync(_readToken.Token).Forget();
         }
 
@@ -167,8 +166,7 @@ namespace UniCore.Systems.Persistance
 
         private void Write()
         {
-            _writeToken.CancelAndDispose();
-            _writeToken = new();
+            _writeToken = _writeToken.Renew();
             WriteAsync(_writeToken.Token).Forget();
         }
 

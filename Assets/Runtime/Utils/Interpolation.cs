@@ -137,7 +137,7 @@ namespace UniCore.Utils
                 token);
         }
 
-        [Obsolete("Use EasedAsync instead.")]
+        [Obsolete("Use EasedAsync instead, kept for retro-compatibility only.")]
         public static async UniTask Async(
             Action<float> progress,
             float from,

@@ -7,16 +7,21 @@ namespace UniCore.Extensions
     {
         public static string GetHierarchyPath(this Transform transform)
         {
-            List<string> names = new List<string>() { transform.name };
+            if (transform == null)
+            {
+                return string.Empty;
+            }
 
+            List<string> names = new() { transform.name };
             Transform current = transform;
+
             while (current.parent != null)
             {
                 names.Insert(0, current.parent.name);
                 current = current.parent;
             }
 
-            return string.Join("/", names);
+            return string.Join('/', names);
         }
     }
 }

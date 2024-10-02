@@ -4,10 +4,11 @@ namespace UniCore.Systems.Navigation.Collections
 {
     public class NavigationEntry
     {
-        public Scene Scene { get; private set; }
-        public object Bundle { get; private set; }
-        public string SceneName { get; private set; }
-        public string ScenePath { get; private set; }
+        public readonly Scene Scene;
+        public readonly object Bundle;
+        public readonly string SceneName;
+        public readonly string ScenePath;
+
         public bool IsLoaded => Scene.isLoaded;
         public bool HasBundle => Bundle != null;
 
