@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 using System.Threading;
-using UniCore.Extensions;
+using UniCore.Extensions.Language;
 using UniCore.Utils;
 using UnityEngine;
 

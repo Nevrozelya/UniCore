@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Net.Mail;
 
-namespace UniCore.Extensions
+namespace UniCore.Extensions.Language
 {
     public static class StringExtensions
     {

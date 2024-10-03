@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace UniCore.Extensions
+namespace UniCore.Extensions.Language
 {
     public static class CancellationTokenSourceExtensions
     {

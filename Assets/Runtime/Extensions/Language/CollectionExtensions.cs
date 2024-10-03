@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace UniCore.Extensions
+namespace UniCore.Extensions.Language
 {
     public static class CollectionExtensions
     {

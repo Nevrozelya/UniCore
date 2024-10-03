@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-using UniCore.Extensions;
+using UniCore.Extensions.Language;
 using UnityEngine;
 
 namespace UniCore.Utils

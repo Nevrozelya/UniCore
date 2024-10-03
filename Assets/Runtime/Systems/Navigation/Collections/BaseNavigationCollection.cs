@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using UniCore.Extensions;
+using UniCore.Extensions.Language;
 using UniCore.Utils;
 using UnityEngine.SceneManagement;
 

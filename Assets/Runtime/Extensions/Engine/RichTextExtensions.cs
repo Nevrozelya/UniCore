@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UniCore.Extensions
+namespace UniCore.Extensions.Engine
 {
     // https://docs.unity3d.com/Packages/com.unity.textmeshpro@3.2/manual/RichTextMark.html
 
@@ -32,8 +32,9 @@ namespace UniCore.Extensions
                     return txt.Mark(value);
                 case RichTag.Color:
                     return txt.Color(value);
+                default:
+                    return txt;
             }
-            return txt;
         }
 
         public static string Bold(this char txt)

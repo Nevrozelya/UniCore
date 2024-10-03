@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UniCore.Extensions;
+using UniCore.Extensions.Language;
 
 namespace UniCore.Helpers.Grid
 {
