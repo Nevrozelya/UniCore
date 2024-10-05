@@ -9,51 +9,45 @@ namespace UniCore.Utils
 
         public static bool TryParse<T>(string json, out T result)
         {
+            result = default;
+
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                return false;
+            }
+
             try
             {
                 result = JsonConvert.DeserializeObject<T>(json);
-
-                if (result == null)
-                {
-                    return false;
-                }
-
-                return true;
+                return result != null;
             }
             catch (Exception e)
             {
                 Logg.Error(e.Message, LOG);
-                result = default(T);
-
                 return false;
             }
         }
 
         public static bool TrySerialize(object obj, out string json, bool indent = true)
         {
+            json = string.Empty;
+
+            if (obj == null)
+            {
+                return false;
+            }
+
             Formatting formatting = indent ? Formatting.Indented : Formatting.None;
+            JsonSerializerSettings settings = new() { NullValueHandling = NullValueHandling.Ignore };
 
             try
             {
-                json = JsonConvert.SerializeObject
-                (
-                    obj,
-                    formatting,
-                    new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }
-                );
-
-                if (string.IsNullOrWhiteSpace(json))
-                {
-                    return false;
-                }
-
-                return true;
+                json = JsonConvert.SerializeObject(obj, formatting, settings);
+                return !string.IsNullOrWhiteSpace(json);
             }
             catch (Exception e)
             {
                 Logg.Error(e.Message, LOG);
-                json = string.Empty;
-
                 return false;
             }
         }
@@ -64,10 +58,7 @@ namespace UniCore.Utils
 
             if (TrySerialize(input, out string json, indent: false))
             {
-                if (TryParse(json, out remapped))
-                {
-                    return true;
-                }
+                return TryParse(json, out remapped);
             }
 
             return false;
