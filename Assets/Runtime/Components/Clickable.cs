@@ -28,6 +28,8 @@ namespace UniCore.Components
 
     public class Clickable : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
+        public bool IsInteractable { get; set; } = true;
+
         // Will happen for both left & right clicks, at press & release states
         public IObservable<ClickEvent> ExhaustiveClickEvent => _click.AsObservable();
         public IObservable<ClickEvent> ClickEvent => ExhaustiveClickEvent.Where(e => e.Phase == ClickPhase.Release && e.IsLeftButton);
@@ -58,6 +60,11 @@ namespace UniCore.Components
 
         public void OnPointerDown(PointerEventData eventData)
         {
+            if (!IsInteractable)
+            {
+                return;
+            }
+
             _isCancelledByDrag = false;
 
             ClickEvent pressEvent = new(ClickPhase.Press, eventData.button);
@@ -66,6 +73,11 @@ namespace UniCore.Components
 
         public void OnPointerUp(PointerEventData eventData)
         {
+            if (!IsInteractable)
+            {
+                return;
+            }
+
             if (_isCancelledByDrag)
             {
                 return;

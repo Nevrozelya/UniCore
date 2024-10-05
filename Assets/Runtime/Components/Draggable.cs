@@ -29,6 +29,7 @@ namespace UniCore.Components
 
     public class Draggable : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
     {
+        public bool IsInteractable { get; set; } = true;
         public bool IsDragging { get; private set; }
         public IObservable<DragEvent> DragEvent => _drag;
 
@@ -42,6 +43,11 @@ namespace UniCore.Components
 
         public void OnPointerDown(PointerEventData eventData)
         {
+            if (!IsInteractable)
+            {
+                return;
+            }
+
             if (_pointerId.HasValue)
             {
                 return;
@@ -56,6 +62,11 @@ namespace UniCore.Components
 
         public void OnPointerUp(PointerEventData eventData)
         {
+            if (!IsInteractable)
+            {
+                return;
+            }
+
             if (!_pointerId.HasValue || eventData.pointerId != _pointerId.Value)
             {
                 return;
@@ -70,6 +81,11 @@ namespace UniCore.Components
 
         public void OnDrag(PointerEventData eventData)
         {
+            if (!IsInteractable)
+            {
+                return;
+            }
+
             if (!_pointerId.HasValue)
             {
                 return; // Should never happen, just in case
