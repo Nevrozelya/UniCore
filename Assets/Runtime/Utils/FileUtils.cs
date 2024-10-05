@@ -39,10 +39,7 @@ namespace UniCore.Utils
                 return;
             }
 
-            if (value == null) // But we accept string.Empty!
-            {
-                return;
-            }
+            value ??= string.Empty;
 
             string directory = Path.GetDirectoryName(path);
             if (!Directory.Exists(directory))
@@ -67,19 +64,17 @@ namespace UniCore.Utils
                 return;
             }
 
-            if (value == null)
+            bool isSerialized = JSON.TrySerialize(value, out string json);
+
+            // We also check for value != null because if null is passed, 
+            // we still want to clear the file!
+            if (!isSerialized && value != null)
             {
+                Logg.Error($"Failed to serialize file to {path}.", LOG);
                 return;
             }
 
-            if (JSON.TrySerialize(value, out string json))
-            {
-                await TryWriteAsync(path, json, token);
-            }
-            else
-            {
-                Logg.Error($"Failed to serialize file to {path}.", LOG);
-            }
+            await TryWriteAsync(path, json, token);
         }
 
         public static async UniTask<T> ReadAndParseAsync<T>(string path, CancellationToken token)
