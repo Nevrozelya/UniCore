@@ -13,11 +13,13 @@ namespace UniCore.Utils
         {
             if (string.IsNullOrWhiteSpace(path))
             {
+                Logg.Error("Given path is null or empty!", LOG);
                 return default;
             }
 
             if (!File.Exists(path))
             {
+                Logg.Error($"File {path} doesn't exist!", LOG);
                 return default;
             }
 
@@ -36,6 +38,7 @@ namespace UniCore.Utils
         {
             if (string.IsNullOrWhiteSpace(path))
             {
+                Logg.Error("Given path is null or empty!", LOG);
                 return;
             }
 
@@ -61,6 +64,7 @@ namespace UniCore.Utils
         {
             if (string.IsNullOrWhiteSpace(path))
             {
+                Logg.Error("Given path is null or empty!", LOG);
                 return;
             }
 
@@ -70,7 +74,7 @@ namespace UniCore.Utils
             // we still want to clear the file!
             if (!isSerialized && value != null)
             {
-                Logg.Error($"Failed to serialize file to {path}.", LOG);
+                Logg.Error($"Failed to serialize file to {path}", LOG);
                 return;
             }
 
@@ -83,6 +87,7 @@ namespace UniCore.Utils
 
             if (string.IsNullOrWhiteSpace(json))
             {
+                Logg.Error($"Failed to read at path: {path}", LOG);
                 return default;
             }
 
@@ -92,43 +97,49 @@ namespace UniCore.Utils
             }
             else
             {
-                Logg.Error($"Failed to parse file at {path}.", LOG);
+                Logg.Error($"Failed to parse file at {path}", LOG);
                 return default;
             }
         }
 
         public static bool TryDeleteDirectory(string path)
         {
-            if (Directory.Exists(path))
+            if (!Directory.Exists(path))
             {
-                try
-                {
-                    Directory.Delete(path, recursive: true);
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    Logg.Error($"Failed to delete directory at {path}, exception is: {e.Message}", LOG);
-                }
+                Logg.Error($"Directory {path} doesn't exist!", LOG);
+                return false;
             }
-            return false;
+
+            try
+            {
+                Directory.Delete(path, recursive: true);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Logg.Error($"Failed to delete directory at {path}, exception is: {e.Message}", LOG);
+                return false;
+            }
         }
 
         public static bool TryDeleteFile(string path)
         {
-            if (File.Exists(path))
+            if (!File.Exists(path))
             {
-                try
-                {
-                    File.Delete(path);
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    Logg.Error($"Failed to delete file at {path}, exception is: {e.Message}", LOG);
-                }
+                Logg.Error($"File {path} doesn't exist!", LOG);
+                return false;
             }
-            return false;
+
+            try
+            {
+                File.Delete(path);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Logg.Error($"Failed to delete file at {path}, exception is: {e.Message}", LOG);
+                return false;
+            }
         }
     }
 }
