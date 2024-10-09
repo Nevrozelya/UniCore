@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
+using System.Collections.Generic;
 
 namespace UniCore.Utils
 {
@@ -29,7 +31,7 @@ namespace UniCore.Utils
             }
         }
 
-        public static bool TrySerialize(object obj, out string json, bool indent = true)
+        public static bool TrySerialize(object obj, out string json, bool indent = true, bool stringifyEnums = false)
         {
             json = string.Empty;
 
@@ -39,12 +41,26 @@ namespace UniCore.Utils
                 return false;
             }
 
-            Formatting formatting = indent ? Formatting.Indented : Formatting.None;
-            JsonSerializerSettings settings = new() { NullValueHandling = NullValueHandling.Ignore };
+            JsonSerializerSettings settings = new()
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
+
+            if (indent)
+            {
+                settings.Formatting = Formatting.Indented;
+            }
+
+            if (stringifyEnums)
+            {
+                StringEnumConverter stringifier = new();
+                List<JsonConverter> converters = new() { stringifier };
+                settings.Converters = converters;
+            }
 
             try
             {
-                json = JsonConvert.SerializeObject(obj, formatting, settings);
+                json = JsonConvert.SerializeObject(obj, settings);
                 return !string.IsNullOrWhiteSpace(json);
             }
             catch (Exception e)
