@@ -70,7 +70,7 @@ namespace UniCore.Extensions.Language
             return null;
         }
 
-        public static T[] Randomize<T>(this T[] items)
+        public static T[] Shuffle<T>(this T[] items)
         {
             Random rand = new();
             T[] result = (T[])items.Clone();
@@ -81,6 +81,23 @@ namespace UniCore.Extensions.Language
             for (int i = 0; i < result.Length - 1; i++)
             {
                 int j = rand.Next(i, result.Length);
+                T temp = result[i];
+                result[i] = result[j];
+                result[j] = temp;
+            }
+
+            return result;
+        }
+
+        // Nasty duplication but better than abusing ToArray() & ToList()
+        public static List<T> Shuffle<T>(this List<T> items)
+        {
+            Random rand = new();
+            List<T> result = new(items);
+
+            for (int i = 0; i < result.Count - 1; i++)
+            {
+                int j = rand.Next(i, result.Count);
                 T temp = result[i];
                 result[i] = result[j];
                 result[j] = temp;
