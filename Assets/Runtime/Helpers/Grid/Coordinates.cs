@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace UniCore.Helpers.Grid
 {
-    public struct Coordinates : IEquatable<Coordinates>
+    public struct Coordinates : IEquatable<Coordinates>, IComparable<Coordinates>
     {
         public readonly int X;
         public readonly int Y;
@@ -125,6 +125,21 @@ namespace UniCore.Helpers.Grid
         public override string ToString()
         {
             return $"({X};{Y})";
+        }
+
+        public int CompareTo(Coordinates other)
+        {
+            if (this > other)
+            {
+                return 1;
+            }
+
+            if (this < other)
+            {
+                return -1;
+            }
+
+            return 0;
         }
 
         public static Coordinates Min(Coordinates a, Coordinates b)
