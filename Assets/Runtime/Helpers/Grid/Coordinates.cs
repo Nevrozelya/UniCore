@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace UniCore.Helpers.Grid
 {
+    [TypeConverter(typeof(CoordinatesConverter))]
     public struct Coordinates : IEquatable<Coordinates>, IComparable<Coordinates>
     {
         public readonly int X;
