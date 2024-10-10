@@ -23,5 +23,19 @@ namespace UniCore.Extensions.Engine
 
             return string.Join('/', names);
         }
+
+        public static void DestroyChildren(this Transform transform)
+        {
+            if (transform == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                GameObject child = transform.GetChild(i).gameObject;
+                GameObject.Destroy(child);
+            }
+        }
     }
 }
