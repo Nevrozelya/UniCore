@@ -1,13 +1,16 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
 namespace UniCore.Helpers.Grid
 {
+    [Serializable]
     public struct Coordinates : IEquatable<Coordinates>, IComparable<Coordinates>
     {
         public readonly int X;
         public readonly int Y;
 
+        [JsonConstructor]
         public Coordinates(int x, int y)
         {
             X = x;
