@@ -9,8 +9,10 @@ namespace UniCore.Helpers.Grid
     {
         public readonly int Width;
         public readonly int Height;
+        private readonly T[][] _grid;
 
-        private readonly T[][] _grid; // x is first index, y is second index
+        int IReadOnlyArrayGrid<T>.Width => Width;
+        int IReadOnlyArrayGrid<T>.Height => Height;
 
         public ArrayGrid(int width, int height)
         {
@@ -38,10 +40,10 @@ namespace UniCore.Helpers.Grid
 
         public void Clear()
         {
-            For(p => { _grid[p.X][p.Y] = default; });
+            For(p => _grid[p.X][p.Y] = default);
         }
 
-        public Coordinates? GetFirstCoordinates(Func<T, bool> predicate)
+        public Coordinates? GetFirstCoordinates(Predicate<T> predicate)
         {
             if (predicate == null)
             {
@@ -56,7 +58,7 @@ namespace UniCore.Helpers.Grid
                 {
                     T entry = list[y];
 
-                    if (entry != null && predicate.Invoke(entry))
+                    if (entry != null && predicate(entry))
                     {
                         return new(x, y);
                     }
@@ -66,7 +68,7 @@ namespace UniCore.Helpers.Grid
             return null;
         }
 
-        public Coordinates[] GetAllCoordinates(Func<T, bool> predicate)
+        public Coordinates[] GetAllCoordinates(Predicate<T> predicate)
         {
             if (predicate == null)
             {
@@ -83,7 +85,7 @@ namespace UniCore.Helpers.Grid
                 {
                     T entry = list[y];
 
-                    if (entry != null && predicate.Invoke(entry))
+                    if (entry != null && predicate(entry))
                     {
                         result ??= new();
 
@@ -113,7 +115,7 @@ namespace UniCore.Helpers.Grid
                 for (int x = 0; x < Width; x++)
                 {
                     Coordinates position = new(x, y);
-                    callback.Invoke(position);
+                    callback(position);
                 }
             }
         }
@@ -131,7 +133,7 @@ namespace UniCore.Helpers.Grid
                 {
                     T model = _grid[x][y];
                     Coordinates position = new(x, y);
-                    callback.Invoke(position, model);
+                    callback(position, model);
                 }
             }
         }
@@ -156,22 +158,24 @@ namespace UniCore.Helpers.Grid
 
         private T Get(int x, int y)
         {
-            if (AreValid(x, y))
+            if (!AreValid(x, y))
             {
-                return _grid[x][y];
+                return default;
             }
 
-            return default;
+            return _grid[x][y];
         }
 
         private void Set(int x, int y, T value)
         {
-            if (AreValid(x, y))
+            if (!AreValid(x, y))
             {
-                T previous = _grid[x][y];
-                _grid[x][y] = value;
-                OnEdition(x, y, previous, value);
+                return;
             }
+
+            T previous = _grid[x][y];
+            _grid[x][y] = value;
+            OnEdition(x, y, previous, value);
         }
 
         private bool AreValid(int x, int y)
