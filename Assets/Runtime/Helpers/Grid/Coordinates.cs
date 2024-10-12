@@ -154,6 +154,21 @@ namespace UniCore.Helpers.Grid
             return a > b ? a : b;
         }
 
+        public static int Distance(Coordinates a, Coordinates b, bool allowDiagonals)
+        {
+            int deltaX = Math.Abs(a.X - b.X);
+            int deltaY = Math.Abs(a.Y - b.Y);
+
+            if (allowDiagonals)
+            {
+                return Math.Max(deltaX, deltaY);
+            }
+            else
+            {
+                return deltaX + deltaY;
+            }
+        }
+
         public static bool operator ==(Coordinates a, Coordinates b)
         {
             return a.X == b.X && a.Y == b.Y;
