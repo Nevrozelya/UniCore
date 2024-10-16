@@ -67,6 +67,12 @@ namespace UniCore.Components
                 return;
             }
 
+            if (!IsDragging)
+            {
+                // Drag didn't start, so it cannot end
+                return;
+            }
+
             if (!_pointerId.HasValue || eventData.pointerId != _pointerId.Value)
             {
                 return;
