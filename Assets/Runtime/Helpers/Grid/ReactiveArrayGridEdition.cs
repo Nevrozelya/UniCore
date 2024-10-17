@@ -1,6 +1,6 @@
 namespace UniCore.Helpers.Grid
 {
-    public struct ReactiveArrayGridEdition<T>
+    public readonly struct ReactiveArrayGridEdition<T>
     {
         public readonly Coordinates Position;
         public readonly T PreviousValue;
