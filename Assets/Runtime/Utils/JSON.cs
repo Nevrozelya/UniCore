@@ -15,7 +15,7 @@ namespace UniCore.Utils
 
             if (string.IsNullOrWhiteSpace(json))
             {
-                Logg.Error("Given json is null or empty!", LOG);
+                Logg.Warning("Can't parse a null or empty json!", LOG);
                 return false;
             }
 
@@ -37,7 +37,7 @@ namespace UniCore.Utils
 
             if (obj == null)
             {
-                Logg.Error("Given object is null or empty!", LOG);
+                Logg.Warning("Can't serialize a null object!", LOG);
                 return false;
             }
 

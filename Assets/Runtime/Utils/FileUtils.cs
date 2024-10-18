@@ -13,13 +13,13 @@ namespace UniCore.Utils
         {
             if (string.IsNullOrWhiteSpace(path))
             {
-                Logg.Error("Given path is null or empty!", LOG);
+                Logg.Warning("Given path is null or empty!", LOG);
                 return default;
             }
 
             if (!File.Exists(path))
             {
-                Logg.Error($"File {path} doesn't exist!", LOG);
+                Logg.Warning($"File {path} doesn't exist!", LOG);
                 return default;
             }
 
@@ -38,7 +38,7 @@ namespace UniCore.Utils
         {
             if (string.IsNullOrWhiteSpace(path))
             {
-                Logg.Error("Given path is null or empty!", LOG);
+                Logg.Warning("Given path is null or empty!", LOG);
                 return;
             }
 
@@ -64,7 +64,7 @@ namespace UniCore.Utils
         {
             if (string.IsNullOrWhiteSpace(path))
             {
-                Logg.Error("Given path is null or empty!", LOG);
+                Logg.Warning("Given path is null or empty!", LOG);
                 return;
             }
 
@@ -74,7 +74,7 @@ namespace UniCore.Utils
             // we still want to clear the file!
             if (!isSerialized && value != null)
             {
-                Logg.Error($"Failed to serialize file to {path}", LOG);
+                Logg.Warning($"Failed to serialize file to {path}", LOG);
                 return;
             }
 
@@ -87,7 +87,7 @@ namespace UniCore.Utils
 
             if (string.IsNullOrWhiteSpace(json))
             {
-                Logg.Error($"Failed to read at path: {path}", LOG);
+                Logg.Warning($"Failed to read at path: {path}", LOG);
                 return default;
             }
 
@@ -106,7 +106,7 @@ namespace UniCore.Utils
         {
             if (!Directory.Exists(path))
             {
-                Logg.Error($"Directory {path} doesn't exist!", LOG);
+                Logg.Warning($"Directory {path} doesn't exist!", LOG);
                 return false;
             }
 
@@ -126,7 +126,7 @@ namespace UniCore.Utils
         {
             if (!File.Exists(path))
             {
-                Logg.Error($"File {path} doesn't exist!", LOG);
+                Logg.Warning($"File {path} doesn't exist!", LOG);
                 return false;
             }
 
