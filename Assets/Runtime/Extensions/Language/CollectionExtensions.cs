@@ -70,6 +70,7 @@ namespace UniCore.Extensions.Language
             return null;
         }
 
+        // Random.Shuffle<T>(T[]) exists but only applies to .net 8+
         public static T[] Shuffle<T>(this T[] items)
         {
             Random rand = new();
