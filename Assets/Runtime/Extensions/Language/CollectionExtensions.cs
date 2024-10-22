@@ -21,6 +21,7 @@ namespace UniCore.Extensions.Language
             return array == null || array.Length == 0;
         }
 
+
         public static int SafeCount<T>(this IEnumerable<T> enumerable)
         {
             if (enumerable == null)
@@ -51,10 +52,68 @@ namespace UniCore.Extensions.Language
             return array.Length;
         }
 
-        public static bool None<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+
+        public static bool IsAccessibleAt<T>(this IEnumerable<T> enumerable, int index)
         {
-            return !source.Any(predicate);
+            if (enumerable.IsNullOrEmpty())
+            {
+                return false;
+            }
+
+            if (index < 0 || index >= enumerable.Count())
+            {
+                return false;
+            }
+
+            return true;
         }
+
+        public static bool IsAccessibleAt<T>(this ICollection<T> collection, int index)
+        {
+            if (collection.IsNullOrEmpty())
+            {
+                return false;
+            }
+
+            if (index < 0 || index >= collection.Count)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool IsAccessibleAt<T>(this T[] array, int index)
+        {
+            if (array.IsNullOrEmpty())
+            {
+                return false;
+            }
+
+            if (index < 0 || index >= array.Length)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+
+        public static bool None<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
+        {
+            return !enumerable.Any(predicate);
+        }
+
+        public static bool None<T>(this ICollection<T> collection, Func<T, bool> predicate)
+        {
+            return !collection.Any(predicate);
+        }
+
+        public static bool None<T>(this T[] array, Func<T, bool> predicate)
+        {
+            return !array.Any(predicate);
+        }
+
 
         public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> entries)
         {
