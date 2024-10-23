@@ -6,12 +6,12 @@ using UniCore.Extensions.Language;
 
 namespace UniCore.Systems.Persistance
 {
-    public class PersistanceDictionarySystem<T> : PersistanceFileSystem<Dictionary<T, string>>
+    public class DictionaryPersistanceSystem<T> : FilePersistanceSystem<Dictionary<T, string>>
     {
-        public PersistanceDictionarySystem(string relativeFilePath) : base(relativeFilePath) { }
+        public DictionaryPersistanceSystem(string relativeFilePath) : base(relativeFilePath) { }
 
         // The write parameter permits to make multiple sequential sets
-        // without triggering multiple file writing, but only for last call.
+        // without triggering multiple file writing, but only (manually) for last call.
         public void Set(T setting, string value, bool write = true)
         {
             _data ??= new();

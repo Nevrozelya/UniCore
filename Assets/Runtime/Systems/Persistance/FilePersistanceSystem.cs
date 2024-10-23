@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace UniCore.Assets.Runtime.Systems.Persistance
 {
-    public class PersistanceFileSystem<T> : IDisposable
+    public class FilePersistanceSystem<T> : IDisposable
     {
         protected T _data;
 
@@ -19,7 +19,7 @@ namespace UniCore.Assets.Runtime.Systems.Persistance
         public bool IsInitialized { get; private set; }
         public bool IsValid => _data != null;
 
-        public PersistanceFileSystem(string relativeFilePath)
+        public FilePersistanceSystem(string relativeFilePath)
         {
             // relativeFilePath must be containing filename & extension
             _path = Path.Combine(Application.persistentDataPath, relativeFilePath).SanitizeBackslashes();
