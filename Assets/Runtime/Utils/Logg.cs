@@ -227,7 +227,7 @@ namespace UniCore.Utils
 
         private static string Format(string txt, string prefix)
         {
-            string date = DateTime.Now.ToString("o");
+            string date = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
 
             if (string.IsNullOrWhiteSpace(prefix))
             {
