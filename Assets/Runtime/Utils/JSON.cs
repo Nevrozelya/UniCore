@@ -31,7 +31,7 @@ namespace UniCore.Utils
             }
         }
 
-        public static bool TrySerialize(object obj, out string json, bool indent = true, bool stringifyEnums = false)
+        public static bool TrySerialize(object obj, out string json, bool indent = true, bool stringifyEnums = true)
         {
             json = string.Empty;
 
