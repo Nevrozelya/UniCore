@@ -3,7 +3,7 @@ using System.Threading;
 using UniCore.Utils;
 using UnityEngine;
 
-namespace UniCore.Assets.Runtime.Extensions.Engine
+namespace UniCore.Extensions.Engine
 {
     public static class CanvasGroupExtensions
     {

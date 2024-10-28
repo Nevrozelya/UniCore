@@ -6,7 +6,7 @@ using UniCore.Extensions.Language;
 using UniCore.Utils;
 using UnityEngine;
 
-namespace UniCore.Assets.Runtime.Systems.Persistance
+namespace UniCore.Systems.Persistance
 {
     public class FilePersistanceSystem<T> : IDisposable
     {
