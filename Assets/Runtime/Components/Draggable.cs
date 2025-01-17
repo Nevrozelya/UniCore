@@ -31,10 +31,11 @@ namespace UniCore.Components
     {
         public bool IsInteractable { get; set; } = true;
         public bool IsDragging { get; private set; }
-        public IObservable<DragEvent> DragEvent => _drag;
+
+        public IObservable<DragEvent> ExhaustiveDragEvent => _drag;
+        public IObservable<DragEvent> DragEvent => _drag.Where(e => e.IsLeftButton);
 
         private Subject<DragEvent> _drag = new();
-        private int? _pointerId;
 
         private void OnDestroy()
         {
@@ -48,12 +49,6 @@ namespace UniCore.Components
                 return;
             }
 
-            if (_pointerId.HasValue)
-            {
-                return;
-            }
-
-            _pointerId = eventData.pointerId;
             IsDragging = false; // Should be useless, just in case
 
             DragEvent pointerDownEvent = new(DragPhase.PointerDown, default, eventData.button);
@@ -73,12 +68,6 @@ namespace UniCore.Components
                 return;
             }
 
-            if (!_pointerId.HasValue || eventData.pointerId != _pointerId.Value)
-            {
-                return;
-            }
-
-            _pointerId = null;
             IsDragging = false;
 
             DragEvent endEvent = new(DragPhase.End, default, eventData.button);
@@ -90,11 +79,6 @@ namespace UniCore.Components
             if (!IsInteractable)
             {
                 return;
-            }
-
-            if (!_pointerId.HasValue)
-            {
-                return; // Should never happen, just in case
             }
 
             if (!IsDragging)

@@ -47,7 +47,7 @@ namespace UniCore.Components
                 return;
             }
 
-            _cancellationDisposable = drag.DragEvent
+            _cancellationDisposable = drag.ExhaustiveDragEvent
                 .Where(e => e.Phase == DragPhase.Dragging)
                 .Subscribe(e => _isCancelledByDrag = true);
         }
