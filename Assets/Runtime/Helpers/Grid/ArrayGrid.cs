@@ -138,6 +138,23 @@ namespace UniCore.Helpers.Grid
             }
         }
 
+        public void ForEach(Action<T> callback)
+        {
+            if (callback == null)
+            {
+                return;
+            }
+
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    T model = _grid[x][y];
+                    callback(model);
+                }
+            }
+        }
+
         public IEnumerator<T> GetEnumerator()
         {
             for (int y = 0; y < Height; y++)
