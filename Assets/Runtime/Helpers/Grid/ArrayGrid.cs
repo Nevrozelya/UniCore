@@ -105,7 +105,7 @@ namespace UniCore.Helpers.Grid
                 {
                     T entry = list[y];
 
-                    if (entry != null && predicate(entry))
+                    if (predicate(entry))
                     {
                         return new(x, y);
                     }
@@ -132,11 +132,11 @@ namespace UniCore.Helpers.Grid
                 {
                     T entry = list[y];
 
-                    if (entry != null && predicate(entry))
+                    if (predicate(entry))
                     {
-                        result ??= new();
-
                         Coordinates found = new(x, y);
+
+                        result ??= new();
                         result.Add(found);
                     }
                 }
