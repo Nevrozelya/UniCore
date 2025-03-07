@@ -9,10 +9,11 @@ namespace UniCore.Helpers.Grid
     {
         public readonly int Width;
         public readonly int Height;
-        private readonly T[][] _grid;
 
         int IReadOnlyArrayGrid<T>.Width => Width;
         int IReadOnlyArrayGrid<T>.Height => Height;
+
+        private readonly T[][] _grid;
 
         public ArrayGrid(int width, int height)
         {
@@ -26,16 +27,62 @@ namespace UniCore.Helpers.Grid
             }
         }
 
-        public T this[int x, int y]
-        {
-            get => Get(x, y);
-            set => Set(x, y, value);
-        }
-
         public T this[Coordinates coordinates]
         {
-            get => Get(coordinates.X, coordinates.Y);
-            set => Set(coordinates.X, coordinates.Y, value);
+            get => Get(coordinates);
+            set => Set(coordinates, value);
+        }
+
+        public bool Move(Coordinates from, Coordinates to)
+        {
+            if (!AreValid(from) || !AreValid(to))
+            {
+                return false;
+            }
+
+            T fromValue = _grid[from.X][from.Y];
+            if (fromValue == null)
+            {
+                return false;
+            }
+
+            T toValue = _grid[to.X][to.Y];
+            if (toValue != null)
+            {
+                return false;
+            }
+
+            _grid[from.X][from.Y] = default;
+            _grid[to.X][to.Y] = fromValue;
+
+            OnMove(from, to, fromValue);
+            return true;
+        }
+
+        public bool Swap(Coordinates from, Coordinates to)
+        {
+            if (!AreValid(from) || !AreValid(to))
+            {
+                return false;
+            }
+
+            T fromValue = _grid[from.X][from.Y];
+            if (fromValue == null)
+            {
+                return false;
+            }
+
+            T toValue = _grid[to.X][to.Y];
+            if (toValue == null)
+            {
+                return false;
+            }
+
+            _grid[from.X][from.Y] = toValue;
+            _grid[to.X][to.Y] = fromValue;
+
+            OnSwap(from, to, fromValue, toValue);
+            return true;
         }
 
         public void Clear()
@@ -171,33 +218,72 @@ namespace UniCore.Helpers.Grid
             return GetEnumerator();
         }
 
-        protected virtual void OnEdition(int x, int y, T previousValue, T newValue) { }
-
-        private T Get(int x, int y)
+        public override string ToString()
         {
-            if (!AreValid(x, y))
+            return ToString(null);
+        }
+
+        public string ToString(Func<T, string> formatter)
+        {
+            if (formatter == null)
+            {
+                formatter = e => e.ToString();
+            }
+
+            string result = string.Empty;
+
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    T model = _grid[x][y];
+
+                    string entry = model == null ? "_" : formatter(model);
+
+                    result += entry;
+
+                    if (x < Width - 1)
+                    {
+                        result += " | ";
+                    }
+                }
+
+                result += "\n";
+            }
+
+            return result;
+        }
+
+        protected virtual void OnEdit(Coordinates position, T previousValue, T newValue) { }
+        protected virtual void OnMove(Coordinates from, Coordinates to, T movedValue) { }
+        protected virtual void OnSwap(Coordinates from, Coordinates to, T swappedFromPreviousValue, T swappedFromNewValue) { }
+
+        private T Get(Coordinates position)
+        {
+            if (!AreValid(position))
             {
                 return default;
             }
 
-            return _grid[x][y];
+            return _grid[position.X][position.Y];
         }
 
-        private void Set(int x, int y, T value)
+        private void Set(Coordinates position, T value)
         {
-            if (!AreValid(x, y))
+            if (!AreValid(position))
             {
                 return;
             }
 
-            T previous = _grid[x][y];
-            _grid[x][y] = value;
-            OnEdition(x, y, previous, value);
+            T previous = _grid[position.X][position.Y];
+            _grid[position.X][position.Y] = value;
+
+            OnEdit(position, previous, value);
         }
 
-        private bool AreValid(int x, int y)
+        private bool AreValid(Coordinates position)
         {
-            return x >= 0 && y >= 0 && x < Width && y < Height;
+            return position.X >= 0 && position.Y >= 0 && position.X < Width && position.Y < Height;
         }
     }
 }
