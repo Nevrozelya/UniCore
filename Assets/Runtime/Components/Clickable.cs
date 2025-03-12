@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using UniCore.Extensions.Language;
+using UniCore.Refinements.Reactive;
 using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -59,13 +60,19 @@ namespace UniCore.Components
 
             _cancellationDisposable = drag.ExhaustiveDragEvent
                 .Where(e => e.Phase == DragPhase.Dragging)
-                .Subscribe(e => _isCancelledByDrag = true);
+                .SubscribeRx(OnDrag);
         }
 
         private void OnDestroy()
         {
             _click.Dispose();
             _cancellationDisposable?.Dispose();
+            _longClickToken.CancelAndDispose();
+        }
+
+        private void OnDrag(DragEvent evt)
+        {
+            _isCancelledByDrag = true;
             _longClickToken.CancelAndDispose();
         }
 
