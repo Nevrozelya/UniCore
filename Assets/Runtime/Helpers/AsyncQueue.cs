@@ -12,12 +12,13 @@ namespace UniCore.Helpers
         private const string LOG = "AsyncQueue";
 
         public IReadOnlyCollection<T> Queue => _queue;
+        public bool IsRunning => _task.Status == UniTaskStatus.Pending;
 
         private Queue<T> _queue;
         private Func<T, CancellationToken, UniTask> _treatment;
 
-        private CancellationTokenSource _token;
         private UniTask _task;
+        private CancellationTokenSource _token;
 
         public AsyncQueue(Func<T, CancellationToken, UniTask> treatment)
         {
