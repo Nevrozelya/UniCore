@@ -37,9 +37,12 @@ namespace UniCore.Components
 
         public bool IsInteractable { get; set; } = true;
 
-        // Will happen for both left & right clicks, at press & release states
-        public IObservable<ClickEvent> ExhaustiveClickEvent => _click.AsObservable();
-        public IObservable<ClickEvent> ClickEvent => ExhaustiveClickEvent.Where(e => e.Phase == ClickPhase.Release && e.IsLeftButton);
+        public IObservable<ClickEvent> CompleteClickEvent => _click.AsObservable(); // Will happen for both left & right clicks, at press & release states
+        public IObservable<ClickEvent> LeftClickEvent => CompleteClickEvent.Where(e => e.Phase == ClickPhase.Release && e.Button == InputButton.Left);
+        public IObservable<ClickEvent> RightClickEvent => CompleteClickEvent.Where(e => e.Phase == ClickPhase.Release && e.Button == InputButton.Right);
+        public IObservable<ClickEvent> MiddleClickEvent => CompleteClickEvent.Where(e => e.Phase == ClickPhase.Release && e.Button == InputButton.Middle);
+        public IObservable<ClickEvent> LeftOrRightClickEvent => CompleteClickEvent.Where(e => e.Phase == ClickPhase.Release && e.Button != InputButton.Middle);
+        public IObservable<ClickEvent> ClickEvent => LeftClickEvent; // Only for naming convenience
 
         private Subject<ClickEvent> _click = new();
         private bool _isCancelledByDrag;
