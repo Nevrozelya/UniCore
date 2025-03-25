@@ -29,10 +29,10 @@ namespace UniCore.Components
 
     public class Draggable : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
     {
-        public bool IsInteractable { get; set; } = true;
-        public bool IsDragging { get; private set; }
+        [field: SerializeField] public bool IsInteractable { get; set; } = true;
 
-        public IObservable<DragEvent> ExhaustiveDragEvent => _drag;
+        public bool IsDragging { get; private set; }
+        public IObservable<DragEvent> CompleteDragEvent => _drag;
         public IObservable<DragEvent> DragEvent => _drag.Where(e => e.IsLeftButton);
 
         private Subject<DragEvent> _drag = new();
