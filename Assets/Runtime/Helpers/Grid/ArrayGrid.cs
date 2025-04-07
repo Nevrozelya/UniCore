@@ -90,6 +90,11 @@ namespace UniCore.Helpers.Grid
             For(p => _grid[p.X][p.Y] = default);
         }
 
+        public bool AreValid(Coordinates position)
+        {
+            return position.X >= 0 && position.Y >= 0 && position.X < Width && position.Y < Height;
+        }
+
         public Coordinates? GetFirstCoordinates(Predicate<T> predicate)
         {
             if (predicate == null)
@@ -279,11 +284,6 @@ namespace UniCore.Helpers.Grid
             _grid[position.X][position.Y] = value;
 
             OnEdit(position, previous, value);
-        }
-
-        private bool AreValid(Coordinates position)
-        {
-            return position.X >= 0 && position.Y >= 0 && position.X < Width && position.Y < Height;
         }
     }
 }

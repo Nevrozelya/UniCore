@@ -7,6 +7,13 @@ namespace UniCore.Helpers.Grid
     [TypeConverter(typeof(CoordinatesConverter))]
     public readonly struct Coordinates : IEquatable<Coordinates>, IComparable<Coordinates>
     {
+        public static readonly Coordinates Zero = new(0, 0);
+        public static readonly Coordinates One = new(1, 1);
+        public static readonly Coordinates Right = new(1, 0);
+        public static readonly Coordinates Left = new(-1, 0);
+        public static readonly Coordinates Up = new(0, 1);
+        public static readonly Coordinates Down = new(0, -1);
+
         public readonly int X;
         public readonly int Y;
 

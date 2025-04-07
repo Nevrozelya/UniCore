@@ -8,6 +8,7 @@ namespace UniCore.Helpers.Grid
         public abstract int Width { get; }
         public abstract int Height { get; }
         public abstract T this[Coordinates c] { get; }
+        public abstract bool AreValid(Coordinates c);
         public abstract Coordinates? GetFirstCoordinates(Predicate<T> predicate);
         public abstract Coordinates[] GetAllCoordinates(Predicate<T> predicate);
         public abstract void For(Action<Coordinates> callback);
