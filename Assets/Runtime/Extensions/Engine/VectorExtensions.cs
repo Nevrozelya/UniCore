@@ -72,5 +72,36 @@ namespace UniCore.Extensions.Engine
         {
             return new Vector3(v.x, v.y, v.z + z);
         }
+
+        // Helpers
+
+        public static Vector2 ToUnity(this System.Numerics.Vector2 vector)
+        {
+            return new Vector2(vector.X, vector.Y);
+        }
+
+        public static Vector3 ToUnity(this System.Numerics.Vector3 vector)
+        {
+            return new Vector3(vector.X, vector.Y, vector.Z);
+        }
+
+        public static System.Numerics.Vector2 ToPure(this Vector2 vector)
+        {
+            return new System.Numerics.Vector2(vector.x, vector.y);
+        }
+
+        public static System.Numerics.Vector3 ToPure(this Vector3 vector)
+        {
+            return new System.Numerics.Vector3(vector.x, vector.y, vector.z);
+        }
+
+        public static Vector3 ToWorldStep(this Vector2 step, Camera camera)
+        {
+            Vector3 viewportStep = camera.ScreenToViewportPoint(step);
+            Vector2 worldSize = camera.GetOrthographicWorldScreenSize();
+            Vector3 worldStep = new(worldSize.x * viewportStep.x, worldSize.y * viewportStep.y, 0);
+
+            return worldStep;
+        }
     }
 }

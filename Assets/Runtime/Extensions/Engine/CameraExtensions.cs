@@ -13,14 +13,20 @@ namespace UniCore.Extensions.Engine
             return new Vector2(worldWidth, worldHeight);
         }
 
-        public static void SetOrthographicSizeFromWorldWidth(this Camera camera, float width)
+        public static void SetOrthographicSizeFromWorldWidth(this Camera camera, float width, float maxRatio = 0)
         {
-            camera.orthographicSize = GetOrthographicSizeFromWorldWidth(width);
+            camera.orthographicSize = GetOrthographicSizeFromWorldWidth(width, maxRatio);
         }
 
-        public static float GetOrthographicSizeFromWorldWidth(float width)
+        public static float GetOrthographicSizeFromWorldWidth(float width, float maxRatio = 0)
         {
             float screenRatio = (float)Screen.width / Screen.height;
+
+            if (maxRatio > 0 && screenRatio > 0)
+            {
+                screenRatio = maxRatio;
+            }
+
             float height = width / screenRatio;
             float orthographicSize = height / 2f;
 
