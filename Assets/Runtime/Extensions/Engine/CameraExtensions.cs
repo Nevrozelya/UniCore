@@ -22,7 +22,7 @@ namespace UniCore.Extensions.Engine
         {
             float screenRatio = (float)Screen.width / Screen.height;
 
-            if (maxRatio > 0 && screenRatio > 0)
+            if (maxRatio > 0 && screenRatio > maxRatio)
             {
                 screenRatio = maxRatio;
             }
