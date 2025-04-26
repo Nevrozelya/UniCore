@@ -73,7 +73,7 @@ namespace UniCore.Extensions.Language
         }
 
         // Nasty duplication but better than abusing ToArray() & ToList()
-        public static IList<T> Shuffle<T>(this IList<T> items, Random rng = null)
+        public static List<T> Shuffle<T>(this List<T> items, Random rng = null)
         {
             if (items.IsNullOrEmpty())
             {
