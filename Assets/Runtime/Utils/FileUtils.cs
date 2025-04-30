@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Threading;
+using UnityEngine;
 
 namespace UniCore.Utils
 {
@@ -17,20 +18,27 @@ namespace UniCore.Utils
                 return default;
             }
 
-            if (!File.Exists(path))
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
             {
-                Logg.Warning($"File {path} doesn't exist!", LOG);
-                return default;
+                return PlayerPrefs.GetString(path);
             }
+            else
+            {
+                if (!File.Exists(path))
+                {
+                    Logg.Warning($"File {path} doesn't exist!", LOG);
+                    return default;
+                }
 
-            try
-            {
-                return await File.ReadAllTextAsync(path, token);
-            }
-            catch (Exception e)
-            {
-                Logg.Error($"Failed to read file at {path}, exception is: {e.Message}", LOG);
-                return default;
+                try
+                {
+                    return await File.ReadAllTextAsync(path, token);
+                }
+                catch (Exception e)
+                {
+                    Logg.Error($"Failed to read file at {path}, exception is: {e.Message}", LOG);
+                    return default;
+                }
             }
         }
 
@@ -44,19 +52,26 @@ namespace UniCore.Utils
 
             value ??= string.Empty;
 
-            string directory = Path.GetDirectoryName(path);
-            if (!Directory.Exists(directory))
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
             {
-                Directory.CreateDirectory(directory);
+                PlayerPrefs.SetString(path, value);
             }
+            else
+            {
+                string directory = Path.GetDirectoryName(path);
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
 
-            try
-            {
-                await File.WriteAllTextAsync(path, value, token);
-            }
-            catch (Exception e)
-            {
-                Logg.Error($"Failed to write file at {path}, exception is: {e.Message}", LOG);
+                try
+                {
+                    await File.WriteAllTextAsync(path, value, token);
+                }
+                catch (Exception e)
+                {
+                    Logg.Error($"Failed to write file at {path}, exception is: {e.Message}", LOG);
+                }
             }
         }
 
