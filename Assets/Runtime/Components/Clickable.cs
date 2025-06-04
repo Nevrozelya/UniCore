@@ -19,13 +19,15 @@ namespace UniCore.Components
     {
         public readonly ClickPhase Phase;
         public readonly InputButton Button;
+        public readonly Vector2 Position;
 
         public readonly bool IsLeftButton => Button == InputButton.Left;
 
-        public ClickEvent(ClickPhase phase, InputButton button)
+        public ClickEvent(ClickPhase phase, InputButton button, Vector2 position)
         {
             Phase = phase;
             Button = button;
+            Position = position;
         }
     }
 
@@ -67,7 +69,7 @@ namespace UniCore.Components
             _isCancelledByDrag = false;
             _longClickTriggered = false;
 
-            ClickEvent pressEvent = new(ClickPhase.Press, eventData.button);
+            ClickEvent pressEvent = new(ClickPhase.Press, eventData.button, eventData.position);
             _click.OnNext(pressEvent);
 
             if (eventData.button == InputButton.Left)
@@ -75,7 +77,7 @@ namespace UniCore.Components
                 if (LongAsRightClick && LongClickDelay > 0)
                 {
                     _longClickToken = _longClickToken.Renew();
-                    _longClickTask = DelayAsync(_longClickToken.Token);
+                    _longClickTask = DelayAsync(eventData, _longClickToken.Token);
                 }
             }
         }
@@ -102,7 +104,7 @@ namespace UniCore.Components
                 return;
             }
 
-            ClickEvent releaseEvent = new(ClickPhase.Release, eventData.button);
+            ClickEvent releaseEvent = new(ClickPhase.Release, eventData.button, eventData.position);
             _click.OnNext(releaseEvent);
         }
 
@@ -112,13 +114,13 @@ namespace UniCore.Components
             _longClickToken.CancelAndDispose();
         }
 
-        private async UniTask DelayAsync(CancellationToken token)
+        private async UniTask DelayAsync(PointerEventData eventData, CancellationToken token)
         {
             await UniTask.WaitForSeconds(LongClickDelay, cancellationToken: token);
 
             _longClickTriggered = true;
 
-            ClickEvent longClickEvent = new(ClickPhase.Release, InputButton.Right);
+            ClickEvent longClickEvent = new(ClickPhase.Release, InputButton.Right, eventData.position);
             _click.OnNext(longClickEvent);
         }
     }
