@@ -15,14 +15,16 @@ namespace UniCore.Components
     {
         public readonly DragPhase Phase;
         public readonly Vector2 Step;
+        public readonly Vector2 Position;
         public readonly InputButton Button;
 
         public readonly bool IsLeftButton => Button == InputButton.Left;
 
-        public DragEvent(DragPhase phase, Vector2 step, InputButton button)
+        public DragEvent(DragPhase phase, Vector2 step, Vector2 position, InputButton button)
         {
             Phase = phase;
             Step = step;
+            Position = position;
             Button = button;
         }
     }
@@ -51,7 +53,7 @@ namespace UniCore.Components
 
             IsDragging = false; // Should be useless, just in case
 
-            DragEvent pointerDownEvent = new(DragPhase.PointerDown, default, eventData.button);
+            DragEvent pointerDownEvent = new(DragPhase.PointerDown, Vector2.zero, eventData.position, eventData.button);
             _drag.OnNext(pointerDownEvent);
         }
 
@@ -70,7 +72,7 @@ namespace UniCore.Components
 
             IsDragging = false;
 
-            DragEvent endEvent = new(DragPhase.End, default, eventData.button);
+            DragEvent endEvent = new(DragPhase.End, Vector2.zero, eventData.position, eventData.button);
             _drag.OnNext(endEvent);
         }
 
@@ -83,13 +85,13 @@ namespace UniCore.Components
 
             if (!IsDragging)
             {
-                DragEvent startEvent = new(DragPhase.Start, default, eventData.button);
+                DragEvent startEvent = new(DragPhase.Start, Vector2.zero, eventData.position, eventData.button);
                 _drag.OnNext(startEvent);
             }
 
             IsDragging = true;
 
-            DragEvent dragEvent = new(DragPhase.Dragging, eventData.delta, eventData.button);
+            DragEvent dragEvent = new(DragPhase.Dragging, eventData.delta, eventData.position, eventData.button);
             _drag.OnNext(dragEvent);
         }
     }

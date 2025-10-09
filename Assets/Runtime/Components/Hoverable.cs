@@ -36,5 +36,10 @@ namespace UniCore.Components
 
             _isHovered.Value = false;
         }
+
+        public void Force(bool isHovered)
+        {
+            _isHovered.Value = isHovered;
+        }
     }
 }
