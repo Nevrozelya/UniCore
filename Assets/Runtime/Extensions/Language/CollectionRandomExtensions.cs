@@ -45,6 +45,84 @@ namespace UniCore.Extensions.Language
             return array[randomIndex];
         }
 
+        public static T PickRandomWeighed<T>(this IEnumerable<(T value, int weight)> entries, Random rng = null)
+        {
+            if (entries.IsNullOrEmpty())
+            {
+                return default;
+            }
+
+            rng ??= new();
+
+            int total = entries.Sum(v => v.weight);
+            int randomIndex = rng.Next(total);
+
+            int sum = 0;
+            foreach ((T value, int weight) in entries)
+            {
+                sum += weight;
+
+                if (sum > randomIndex)
+                {
+                    return value;
+                }
+            }
+
+            return entries.LastOrDefault().value;
+        }
+
+        public static T PickRandomWeighed<T>(this ICollection<(T value, int weight)> entries, Random rng = null)
+        {
+            if (entries.IsNullOrEmpty())
+            {
+                return default;
+            }
+
+            rng ??= new();
+
+            int total = entries.Sum(v => v.weight);
+            int randomIndex = rng.Next(total);
+
+            int sum = 0;
+            foreach ((T value, int weight) in entries)
+            {
+                sum += weight;
+
+                if (sum > randomIndex)
+                {
+                    return value;
+                }
+            }
+
+            return entries.LastOrDefault().value;
+        }
+
+        public static T PickRandomWeighed<T>(this (T value, int weight)[] entries, Random rng = null)
+        {
+            if (entries.IsNullOrEmpty())
+            {
+                return default;
+            }
+
+            rng ??= new();
+
+            int total = entries.Sum(v => v.weight);
+            int randomIndex = rng.Next(total);
+
+            int sum = 0;
+            foreach ((T value, int weight) in entries)
+            {
+                sum += weight;
+
+                if (sum > randomIndex)
+                {
+                    return value;
+                }
+            }
+
+            return entries.LastOrDefault().value;
+        }
+
         // Random.Shuffle<T>(T[]) exists but only applies to .net 8+
         public static T[] Shuffle<T>(this T[] items, Random rng = null)
         {
