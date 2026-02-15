@@ -11,13 +11,19 @@ namespace UniCore.Helpers
         private readonly T _template;
         private readonly Transform _container;
         private readonly int _targetSize;
+        private readonly bool _activateEntries;
 
         private Queue<T> _queue;
 
-        public NaivePool(T template, Transform container, int targetSize = DEFAULT_TARGET_SIZE)
+        public NaivePool(
+            T template,
+            Transform container,
+            bool activateEntries = false,
+            int targetSize = DEFAULT_TARGET_SIZE)
         {
             _template = template;
             _container = container;
+            _activateEntries = activateEntries;
             _targetSize = targetSize;
         }
 
@@ -28,23 +34,39 @@ namespace UniCore.Helpers
 
         public T Rent(out bool isCreation)
         {
+            T instance;
+
             if (_queue.IsNullOrEmpty())
             {
-                T instance = GameObject.Instantiate(_template, _container);
                 isCreation = true;
-
-                return instance;
+                instance = GameObject.Instantiate(_template, _container);
             }
             else
             {
                 isCreation = false;
-
-                return _queue.Dequeue();
+                instance = _queue.Dequeue();
             }
+
+            if (_activateEntries)
+            {
+                instance.gameObject.SetActive(true);
+            }
+
+            return instance;
         }
 
         public void Release(T instance)
         {
+            if (instance == null)
+            {
+                return;
+            }
+
+            if (_activateEntries)
+            {
+                instance.gameObject.SetActive(false);
+            }
+
             if (_queue.IsNullOrEmpty() || _queue.Count < _targetSize)
             {
                 _queue ??= new();
