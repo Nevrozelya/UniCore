@@ -13,9 +13,16 @@ namespace UniCore.Extensions.Language
                 return default;
             }
 
+            int count = enumerable.Count();
+
+            if (count == 1)
+            {
+                return enumerable.ElementAt(0);
+            }
+
             rng ??= new();
 
-            int randomIndex = rng.Next(enumerable.Count());
+            int randomIndex = rng.Next(count);
             return enumerable.ElementAt(randomIndex);
         }
 
@@ -24,6 +31,11 @@ namespace UniCore.Extensions.Language
             if (collection.IsNullOrEmpty())
             {
                 return default;
+            }
+
+            if (collection.Count == 1)
+            {
+                return collection.ElementAt(0);
             }
 
             rng ??= new();
@@ -39,6 +51,11 @@ namespace UniCore.Extensions.Language
                 return default;
             }
 
+            if (array.Length == 1)
+            {
+                return array[0];
+            }
+
             rng ??= new();
 
             int randomIndex = rng.Next(array.Length);
@@ -50,6 +67,11 @@ namespace UniCore.Extensions.Language
             if (entries.IsNullOrEmpty())
             {
                 return default;
+            }
+
+            if (entries.Count() == 1)
+            {
+                return entries.ElementAt(0).value;
             }
 
             rng ??= new();
@@ -78,6 +100,11 @@ namespace UniCore.Extensions.Language
                 return default;
             }
 
+            if (entries.Count == 1)
+            {
+                return entries.ElementAt(0).value;
+            }
+
             rng ??= new();
 
             int total = entries.Sum(v => v.weight);
@@ -102,6 +129,11 @@ namespace UniCore.Extensions.Language
             if (entries.IsNullOrEmpty())
             {
                 return default;
+            }
+
+            if (entries.Length == 1)
+            {
+                return entries[0].value;
             }
 
             rng ??= new();
