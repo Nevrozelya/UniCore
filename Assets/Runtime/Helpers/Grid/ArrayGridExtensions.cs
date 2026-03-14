@@ -44,5 +44,55 @@ namespace UniCore.Helpers.Grid
 
             return grid;
         }
+
+        public static bool IsLineComplete<T>(this IReadOnlyArrayGrid<T> grid, int y)
+        {
+            if (grid.IsNullOrEmpty())
+            {
+                return false;
+            }
+
+            if (y < 0 || y >= grid.Height)
+            {
+                return false;
+            }
+
+            for (int x = 0; x < grid.Width; x++)
+            {
+                Coordinates c = new(x, y);
+
+                if (grid[c] == null)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public static bool IsColumnComplete<T>(this IReadOnlyArrayGrid<T> grid, int x)
+        {
+            if (grid.IsNullOrEmpty())
+            {
+                return false;
+            }
+
+            if (x < 0 || x >= grid.Width)
+            {
+                return false;
+            }
+
+            for (int y = 0; y < grid.Height; y++)
+            {
+                Coordinates c = new(x, y);
+
+                if (grid[c] == null)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
     }
 }
