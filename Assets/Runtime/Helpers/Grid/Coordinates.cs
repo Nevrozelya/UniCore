@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace UniCore.Helpers.Grid
@@ -40,68 +39,6 @@ namespace UniCore.Helpers.Grid
         public bool Equals(Coordinates other)
         {
             return X == other.X && Y == other.Y;
-        }
-
-        public List<Coordinates> GetDiagonals(int width, int height)
-        {
-            List<Coordinates> diagonals = new();
-
-            if (X > 0 && Y > 0)
-            {
-                Coordinates bottomLeft = new(X - 1, Y - 1);
-                diagonals.Add(bottomLeft);
-            }
-
-            if (X > 0 && Y < height - 1)
-            {
-                Coordinates topLeft = new(X - 1, Y + 1);
-                diagonals.Add(topLeft);
-            }
-
-            if (X < width - 1 && Y > 0)
-            {
-                Coordinates bottomRight = new(X + 1, Y - 1);
-                diagonals.Add(bottomRight);
-            }
-
-            if (X < width - 1 && Y < height - 1)
-            {
-                Coordinates topRight = new(X + 1, Y + 1);
-                diagonals.Add(topRight);
-            }
-
-            return diagonals;
-        }
-
-        public List<Coordinates> GetNeighbors(int width, int height)
-        {
-            List<Coordinates> neighbors = new();
-
-            if (Y > 0)
-            {
-                Coordinates bottom = new(X, Y - 1);
-                neighbors.Add(bottom);
-            }
-
-            if (Y < height - 1)
-            {
-                Coordinates top = new(X, Y + 1);
-                neighbors.Add(top);
-            }
-
-            if (X > 0)
-            {
-                Coordinates left = new(X - 1, Y);
-                neighbors.Add(left);
-            }
-
-            if (X < width - 1)
-            {
-                Coordinates right = new(X + 1, Y);
-                neighbors.Add(right);
-            }
-
-            return neighbors;
         }
 
         public Coordinates Rotate(bool isClockwise)
