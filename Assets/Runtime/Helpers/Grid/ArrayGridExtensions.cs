@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UniCore.Extensions.Language;
 
@@ -47,7 +48,17 @@ namespace UniCore.Helpers.Grid
 
         public static bool IsLineComplete<T>(this IReadOnlyArrayGrid<T> grid, int y)
         {
+            return grid.IsLineComplete(y, t => t != null);
+        }
+
+        public static bool IsLineComplete<T>(this IReadOnlyArrayGrid<T> grid, int y, Predicate<T> predicate)
+        {
             if (grid.IsNullOrEmpty())
+            {
+                return false;
+            }
+
+            if (predicate == null)
             {
                 return false;
             }
@@ -61,7 +72,7 @@ namespace UniCore.Helpers.Grid
             {
                 Coordinates c = new(x, y);
 
-                if (grid[c] == null)
+                if (!predicate.Invoke(grid[c]))
                 {
                     return false;
                 }
@@ -72,7 +83,17 @@ namespace UniCore.Helpers.Grid
 
         public static bool IsColumnComplete<T>(this IReadOnlyArrayGrid<T> grid, int x)
         {
+            return grid.IsColumnComplete(x, t => t != null);
+        }
+
+        public static bool IsColumnComplete<T>(this IReadOnlyArrayGrid<T> grid, int x, Predicate<T> predicate)
+        {
             if (grid.IsNullOrEmpty())
+            {
+                return false;
+            }
+
+            if (predicate == null)
             {
                 return false;
             }
@@ -86,7 +107,7 @@ namespace UniCore.Helpers.Grid
             {
                 Coordinates c = new(x, y);
 
-                if (grid[c] == null)
+                if (!predicate.Invoke(grid[c]))
                 {
                     return false;
                 }
